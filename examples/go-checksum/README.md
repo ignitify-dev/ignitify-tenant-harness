@@ -12,3 +12,9 @@ ignitify task:run go-checksum --dir my-tasks --payload '{"text":"hello"}' --wait
 ```
 
 The code uses only the standard library, so `go.sum` stays as the scaffold wrote it. After `go get <module>`, run `go mod tidy` and upload both files.
+
+Expected result of the run above:
+
+```json
+{"bytes": 5, "sha256": "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824"}
+```

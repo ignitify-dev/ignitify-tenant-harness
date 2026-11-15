@@ -11,4 +11,4 @@ run:
   payload:
     text: hello
   preset: std.micro
-  timeout_sec: 30
+  timeout_sec: 60

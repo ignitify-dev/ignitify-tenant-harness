@@ -13,7 +13,7 @@ Find out why the Ignitify deploy of `$ARGUMENTS` failed. Use the `ignitify-deplo
 
 Run these first. All are read-only:
 
-1. If you have a slug: `ignitify task:get <slug>` to find the latest deployment id. If you have a deployment id, skip this.
+1. If you have a slug: `ignitify task:get <slug> --dir <base-dir>` to find the latest deployment id (it needs the local task folder). If you have a deployment id, skip this.
 2. `ignitify deployment:get <deployment-id>` (status, stage, log tail)
 3. `ignitify deployment:logs <deployment-id>` (the full build log)
 4. `ignitify task:validate <slug>` and `ignitify task:deploy <slug> --check`

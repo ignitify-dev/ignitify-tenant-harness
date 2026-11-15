@@ -13,10 +13,18 @@ export async function run(payload: Payload, ctx: Ctx) {
     // A thrown error fails the run; its message is the run error.
     throw new Error(`payload.repo must look like "owner/name", got ${JSON.stringify(payload.repo)}`);
   }
-  const res = await fetch(`https://api.github.com/repos/${repo}`, {
-    headers: { accept: "application/vnd.github+json", "user-agent": "ignitify-example" },
-    signal: AbortSignal.timeout(20_000),
-  });
+  const url = `https://api.github.com/repos/${repo}`;
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      headers: { accept: "application/vnd.github+json", "user-agent": "ignitify-example" },
+      signal: AbortSignal.timeout(20_000),
+    });
+  } catch (err) {
+    // fetch() says only "fetch failed"; the network reason (ECONNRESET, EAI_AGAIN, ...) is in err.cause.
+    const cause = (err as { cause?: { code?: string; message?: string } }).cause;
+    throw new Error(`fetch ${url} failed: ${cause?.code ?? cause?.message ?? String(err)}`);
+  }
   if (!res.ok) throw new Error(`GitHub answered ${res.status} for ${repo}`);
   const body = (await res.json()) as { stargazers_count: number; open_issues_count: number };
   ctx.metric("github_calls", 1);

@@ -69,7 +69,9 @@ else
   base="$PWD/.ignitify-harness"
 fi
 manifest="$base/$MANIFEST_NAME"
-remove_hint="curl -fsSL https://raw.githubusercontent.com/$REPO/$HARNESS_VERSION/install.sh | sh -s -- --client $client --scope $scope --uninstall"
+# --scope means something for claude-code only, so the generic hint leaves it out.
+if [ "$client" = claude-code ]; then scope_arg=" --scope $scope"; else scope_arg=""; fi
+remove_hint="curl -fsSL https://raw.githubusercontent.com/$REPO/$HARNESS_VERSION/install.sh | sh -s -- --client $client$scope_arg --uninstall"
 
 sha256_of() {
   if command -v sha256sum >/dev/null 2>&1; then sha256sum "$1" | awk '{print $1}'

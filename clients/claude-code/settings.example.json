@@ -1,6 +1,7 @@
 {
   "permissions": {
     "allow": [
+      "Skill(ignitify-*)",
       "Bash(ignitify --version)",
       "Bash(ignitify help *)",
       "Bash(ignitify whoami *)",
@@ -45,6 +46,7 @@
       "Bash(ignitify hook:create *)",
       "Bash(ignitify hook:delete *)",
       "Bash(ignitify notify:set *)",
+      "Bash(ignitify key*)",
       "Bash(ignitify login *)",
       "Bash(ignitify logout *)",
       "Bash(env)",

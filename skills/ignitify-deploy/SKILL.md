@@ -15,7 +15,7 @@ Read `ignitify-getting-started` first for the safety rules. A deploy is a write:
 | 1 | `ignitify task:validate <slug>` | no | `task.yaml` is valid, or a `✗` line per problem. |
 | 2 | `ignitify task:pack <slug>` | no | The files the upload would take, and the dedup key. |
 | 3 | `ignitify task:deploy <slug> --check` | no | Every local check of a deploy. Nothing is uploaded. |
-| 4 | `ignitify task:get <slug>` | yes | Whether the next deploy builds a new image, and why. |
+| 4 | `ignitify task:get <slug> --dir <base-dir>` | yes | Whether the next deploy builds a new image, and why. |
 | 5 | `ignitify task:create <slug> --no-scaffold` | yes | Only once, when the folder was made with `--local`: registers the slug. The slug is then reserved forever. |
 | 6 | `ignitify task:deploy <slug>` | yes | Uploads the source and waits for the build. Prints the deployment id. |
 
@@ -46,7 +46,7 @@ A deploy of a folder that was never registered fails with `task_id not found in 
 There is no version number. Each deployment is one version.
 
 - `ignitify deployment:list` lists deployments with their image size.
-- `ignitify task:get <slug>` shows the deploys and runs of one task.
+- `ignitify task:get <slug>` shows the deploys and runs of one task. It reads the local task folder first, so run it where `--dir` (or `$IGNITIFY_TASKS_DIR`) finds the folder.
 - `ignitify task:run <slug>` runs the task's latest deployment. If the latest build failed or still builds, the run is refused.
 - `ignitify task:run <slug> --deployment <id>` runs an older, `READY` deployment (a roll back for one run).
 - A webhook belongs to one deployment. After a new deploy, the user must create a webhook for the new deployment (see `ignitify-runs`).

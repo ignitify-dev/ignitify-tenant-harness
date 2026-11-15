@@ -26,7 +26,7 @@ The **only** interface for you is the `ignitify` CLI. Do not call the HTTP API d
 1. Check that the CLI is installed: `ignitify --version`. The first line is the client version. The second line says if the CLI reached the platform.
 2. If it is missing, tell the user to install it (Node 22.13 or newer, macOS or Linux): `npm install --global ignitify`. Do not install it yourself without asking.
 3. Check the sign-in: `ignitify whoami`. If it says "Not signed in", ask the user to run `ignitify login`. A person must approve the sign-in in a browser. Never run `ignitify login` or `ignitify logout` yourself.
-4. This harness was checked against ignitify CLI 1.2.2. If the installed CLI is newer, trust `ignitify help <command>` over the text of these skills.
+4. This harness was checked against ignitify CLI 1.2.2 and the commands of the next release. `run:timeline`, `run:failures`, `usage:series`, `notification:list` and the `run:logs` flags `--follow` and `--tail` come with the CLI release after 1.2.2. If `ignitify help` does not list them, use `ignitify run:get <run-id> --json` (status, `result.error`) in place of the timeline and the failure classes, and `ignitify run:logs <run-id> | tail -n 200` in place of `--tail 200`. If the installed CLI is newer, trust `ignitify help <command>` over the text of these skills.
 
 ## The CLI is the authority
 

@@ -46,6 +46,7 @@ For a task that fails often, start with `ignitify run:failures --days 7` and `ig
 | Run `FAILED` after about `timeout_sec` | No sign of life within `timeout_sec` | Raise `run.timeout_sec` (plan cap: `ignitify whoami`), or use `duration: long` for long work. |
 | Task error `ECONNRESET` on one host | The host is not in `egress_allow` (a redirect to another host is also blocked) | Add the exact host; check `network.type` is not `none`. |
 | Every outbound call fails | `network.type: none` (the default) | Set `type: egress`. |
+| Node task error `fetch failed` and nothing more | Node's `fetch` puts the network reason in `err.cause` | Log or rethrow `err.cause.code`. `ECONNRESET`: host not in `egress_allow`. `EAI_AGAIN` or `ENOTFOUND`: the name did not resolve (a typo, or DNS trouble; if it repeats for a correct name, prepare a support report). |
 | Run `FAILED`, a declared secret has no value | `secret:set` was never run for that name | Compare `secrets:` with `ignitify secret:list`. The user sets the value. |
 | A secret reads as empty or missing in code | The name is not in `secrets:` in `task.yaml` | Declare it; only declared names reach `ctx.secrets`. |
 | Bidirectional run fails, no public URL | `ctx.ready()` never called, or the task listens on another port | Call `ctx.ready()` after listen; `inbound_port` must equal the port in code. |

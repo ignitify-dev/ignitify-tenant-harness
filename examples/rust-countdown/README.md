@@ -13,3 +13,5 @@ ignitify task:run rust-countdown --dir my-tasks --payload '{"from":3}' --wait
 ```
 
 The code uses only `serde_json`, which the scaffold's `Cargo.toml` and `Cargo.lock` already have. After `cargo add <crate>`, upload both files.
+
+Expected result of the run above: `{"counted": 3}`, after about 3 seconds. The log shows `left: 3`, `left: 2`, `left: 1`. The last chunk, `{"left": 1}`, is in `progress` of `ignitify run:get <run-id> --full`.

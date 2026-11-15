@@ -32,9 +32,23 @@ snapshot_from_cli() {
     done
 }
 
+# Refuse a snapshot with no command or no flag: a CLI whose help output changed shape gives an
+# empty list, and every command in the docs would then read as "unknown".
+check_snapshot() {
+  commands=$(grep -cvE '^(#|\*|$)' "$1" || true)
+  flags=$(grep -vE '^(#|\*)' "$1" | tr ' ' '\n' | grep -c '^--' || true)
+  if [ "$commands" -eq 0 ] || [ "$flags" -eq 0 ]; then
+    echo "check-commands: the help of the installed CLI gave $commands commands and $flags flags; is its help format new? Nothing written." >&2
+    exit 2
+  fi
+}
+
 case "${1:-}" in
-  --refresh) snapshot_from_cli > "$SNAPSHOT"; echo "wrote $SNAPSHOT" ;;
-  --live) LIVE=$(mktemp); trap 'rm -f "$LIVE"' EXIT; snapshot_from_cli > "$LIVE"; SNAPSHOT=$LIVE ;;
+  --refresh)
+    NEW=$(mktemp); trap 'rm -f "$NEW"' EXIT
+    snapshot_from_cli > "$NEW"; check_snapshot "$NEW"
+    cp "$NEW" "$SNAPSHOT"; echo "wrote $SNAPSHOT" ;;
+  --live) LIVE=$(mktemp); trap 'rm -f "$LIVE"' EXIT; snapshot_from_cli > "$LIVE"; check_snapshot "$LIVE"; SNAPSHOT=$LIVE ;;
   "") ;;
   *) echo "usage: $0 [--refresh|--live]" >&2; exit 2 ;;
 esac
@@ -72,6 +86,8 @@ awk -v snap="$SNAPSHOT" '
       sub(/^[^i]*ignitify +/, "", hit)
       after = substr(rest, RSTART + RLENGTH)
       rest = after
+      # A permission rule names a command prefix with a glob ("ignitify key*"): not a command.
+      if (substr(after, 1, 1) == "*") continue
       if (hit == "--version" || hit == "--help" || hit == "-v" || hit == "-h") continue
       if (!(hit in known)) { printf "%s:%d: unknown command: ignitify %s\n", FILENAME, FNR, hit; bad = 1; continue }
       # The flags that belong to this command: up to a shell separator, a closing backtick or the next command.

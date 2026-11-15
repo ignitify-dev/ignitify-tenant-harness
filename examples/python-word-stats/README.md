@@ -8,3 +8,11 @@ ignitify task:validate python-word-stats --dir examples
 ignitify task:deploy python-word-stats --dir examples
 ignitify task:run python-word-stats --dir examples --payload '{"text":"a b a","top":1}' --wait
 ```
+
+Expected result of the run above:
+
+```json
+{"words": 3, "unique": 2, "top": [["a", 2]]}
+```
+
+A payload with `"top": 0` fails the run with `ValueError: payload.top must be an integer from 1 to 50`.

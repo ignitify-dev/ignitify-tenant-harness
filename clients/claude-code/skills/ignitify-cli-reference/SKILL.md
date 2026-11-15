@@ -6,7 +6,7 @@ license: Apache-2.0
 
 # CLI reference
 
-Checked against ignitify CLI 1.2.2. When the installed CLI differs, `ignitify help <command>` wins.
+Checked against ignitify CLI 1.2.2. When the installed CLI differs, `ignitify help <command>` wins. Rows marked *(after 1.2.2)* need the next CLI release. `run:timeline`, `run:failures`, `usage:series`, `notification:list` and the `run:logs` flags `--follow` and `--tail` come with the CLI release after 1.2.2. If `ignitify help` does not list them, use `ignitify run:get <run-id> --json` (status, `result.error`) in place of the timeline and the failure classes, and `ignitify run:logs <run-id> | tail -n 200` in place of `--tail 200`.
 
 ## Rules for every command
 
@@ -37,8 +37,8 @@ Checked against ignitify CLI 1.2.2. When the installed CLI differs, `ignitify he
 | `quota` | `ignitify quota` | read |
 | `usage` | `ignitify usage [--period YYYY-MM] [--axis <axis>] [--vm <vm-id>] [--run <run-id>] [--runs\|--vms] [--json]` | read |
 | `usage:export` | `ignitify usage:export [--period YYYY-MM] [--axis <axis>] [--vm <vm-id>] [--run <run-id>] (--json\|--csv)` | read |
-| `usage:series` | `ignitify usage:series [--days N] [--json]` | read |
-| `notification:list` | `ignitify notification:list [--unread \| --open] [--kind <kind>] [--limit N] [--json]` | read |
+| `usage:series` *(after 1.2.2)* | `ignitify usage:series [--days N] [--json]` | read |
+| `notification:list` *(after 1.2.2)* | `ignitify notification:list [--unread \| --open] [--kind <kind>] [--limit N] [--json]` | read |
 | `task:create` | `ignitify task:create <task-id> [--lang node\|python\|go\|rust] [--local] [--no-init] [--no-scaffold] [--dir <base-dir>]` | ask (with `--local`: read) |
 | `task:list` | `ignitify task:list [--limit N] [--after-id <id>] [--after <iso>]` | read |
 | `task:get` | `ignitify task:get <task-id> [--dir <base-dir>]` | read |
@@ -53,9 +53,9 @@ Checked against ignitify CLI 1.2.2. When the installed CLI differs, `ignitify he
 | `deployment:delete` | `ignitify deployment:delete <deployment-id> [--yes]` | user |
 | `run:list` | `ignitify run:list [--status S] [--deployment-id D] [--task-name N] [--preset P] [--correlation-id C] [--vm-id V] [--limit N] [--after-id <id>] [--after <iso>]` | read |
 | `run:get` | `ignitify run:get <run-id> [--full]` | read |
-| `run:logs` | `ignitify run:logs <run-id> [--follow] [--tail N] [--raw]` | read |
-| `run:timeline` | `ignitify run:timeline <run-id> [--follow]` | read |
-| `run:failures` | `ignitify run:failures [--days N] [--json]` | read |
+| `run:logs` | `ignitify run:logs <run-id> [--follow] [--tail N] [--raw]` (`--follow`, `--tail` after 1.2.2) | read |
+| `run:timeline` *(after 1.2.2)* | `ignitify run:timeline <run-id> [--follow]` | read |
+| `run:failures` *(after 1.2.2)* | `ignitify run:failures [--days N] [--json]` | read |
 | `run:cancel` | `ignitify run:cancel <run-id> [--yes] [--force] [--grace <ms>]` | ask |
 | `run:delete` | `ignitify run:delete <run-id> [--yes]` | user |
 | `vm:list` | `ignitify vm:list [--pinned] [--deployment-id D] [--task-name N] [--preset P] [--older-than 24h] [--limit N] [--after-id <vm-id>] [--after <iso>]` | read |

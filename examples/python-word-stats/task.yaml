@@ -12,4 +12,4 @@ run:
     text: "the quick brown fox jumps over the lazy dog the end"
     top: 3
   preset: std.micro
-  timeout_sec: 30
+  timeout_sec: 60

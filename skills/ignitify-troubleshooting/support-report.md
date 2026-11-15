@@ -27,6 +27,7 @@ server trace id: <copy exactly>
 ## The run (if a run failed)
 
 - Run id:
+- Correlation id (`correlation_id` in `ignitify run:get <run-id> --json`; support traces the run by it):
 - Status and failure class (from `ignitify run:timeline <run-id>`):
 
 ```

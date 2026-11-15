@@ -66,7 +66,11 @@ ignitify key:create --user ai-assistant --label laptop --out ./ai-assistant.key 
 These commands are planned, not shipped yet. Until then, use your normal key and treat it as full access, and:
 
 1. The skills tell the client to read freely, ask before every write, and never run deletes, secret commands, webhook creation, `login` or `logout`. These are instructions, not a lock: a client can ignore them.
-2. In Claude Code, add the rules of `clients/claude-code/settings.example.json` to your `.claude/settings.json`. They allow read-only `ignitify` commands, ask before writes, and deny the destructive and secret commands. A plugin cannot set permissions for you. The rules match command prefixes only: they do not stop `cat` of the key file, and they cover `~/.config/ignitify` but not a custom `$XDG_CONFIG_HOME`.
+2. In Claude Code, add the rules of `clients/claude-code/settings.example.json` to your `.claude/settings.json`. They allow read-only `ignitify` commands and the harness skills, ask before writes, and deny the destructive and secret commands. A plugin cannot set permissions for you. What to expect (tested with Claude Code 2.1):
+   - Claude Code ignores the `allow` rules of a project `.claude/settings.json` until you accept the trust dialog for that folder once; the `ask` and `deny` rules apply at once.
+   - An `ask` rule wins over an `allow` rule, so `task:create --local` and `task:deploy --check` also ask, although they change nothing on the server.
+   - A rule also matches the bare command (`Bash(ignitify whoami *)` matches `ignitify whoami`). A deny rule also matches inside an `&&` chain and after `VAR=value`. A command in `( … )` with pipes asks.
+   - `Read(~/.config/ignitify/**)` blocks the Read tool on the key file. `cat` of the file is not denied: it asks, so do not approve it. The rule does not cover a custom `$XDG_CONFIG_HOME`.
 3. Do not export `IGNITIFY_API_KEY` in the shell your AI client uses; let it use the saved login, so the key value stays out of the client's environment. The CLI talks to one fixed Ignitify address; no flag changes it.
 4. Review every command your client proposes. Do not approve `--yes` on a delete you did not ask for.
 5. Your client sends what it reads (run logs, results, `task.yaml`) to its model vendor. Keep secrets out of logs and results.

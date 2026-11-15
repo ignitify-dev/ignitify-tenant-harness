@@ -12,3 +12,5 @@ ignitify task:run node-github-stars --dir examples --payload '{"repo":"nodejs/no
 For real work, pick your own slug: rename the folder and `slug` together.
 
 Try a host that is not allowed: change the URL in `index.ts` to another host. The task sees `ECONNRESET`.
+
+Expected result: `{"repo": "nodejs/node", "stars": <number>, "open_issues": <number>}`. If the run fails with `fetch https://api.github.com/... failed: <code>`, the code names the network reason: `ECONNRESET` means the host is not allowed, `EAI_AGAIN` or `ENOTFOUND` means the name did not resolve.
