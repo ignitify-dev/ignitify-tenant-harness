@@ -8,6 +8,7 @@
 #   scripts/check-commands.sh --refresh  rewrite cli/commands.txt from the `ignitify` on PATH, then check
 #   scripts/check-commands.sh --live     check the docs against the `ignitify` on PATH (writes nothing)
 #
+# A line ending in "# planned" is skipped: it names a command that is not shipped yet.
 # Exit 0: every command and flag is real. Exit 1: the script lists what is not.
 # Needs: sh, awk, sed, grep, find. `--refresh` and `--live` also need `ignitify` (no key, no network).
 set -eu
@@ -61,6 +62,8 @@ awk -v snap="$SNAPSHOT" '
     }
     bad = 0
   }
+  # A line that ends in "# planned" names a command the CLI does not ship yet.
+  /# planned$/ { next }
   {
     rest = $0
     # A command is "ignitify " then a lower-case word, with an optional ":verb".

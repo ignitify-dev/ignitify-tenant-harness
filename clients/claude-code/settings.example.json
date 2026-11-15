@@ -47,8 +47,6 @@
       "Bash(ignitify notify:set *)",
       "Bash(ignitify login *)",
       "Bash(ignitify logout *)",
-      "Bash(ignitify * --api *)",
-      "Bash(ignitify * --api=*)",
       "Bash(env)",
       "Bash(printenv *)",
       "Read(~/.config/ignitify/**)"

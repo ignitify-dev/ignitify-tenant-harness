@@ -15,7 +15,7 @@ Checked against ignitify CLI 1.2.2. When the installed CLI differs, `ignitify he
 - Environment: `IGNITIFY_API_KEY` (a key; wins over the saved login), `IGNITIFY_TASKS_DIR` (folder of task folders; default `tasks`), `NO_COLOR`.
 - Exit codes: 0 success; 1 error or refusal; 130 Ctrl+C during a wait. `task:run --wait` and an ended `run:timeline` exit 0 only for `COMPLETED`.
 - Errors are text on stderr (also with `--json`), with `server trace id: …` after a failed request.
-- Every command also takes a hidden `--api <url>` flag. An AI client never passes it: with `IGNITIFY_API_KEY` set, the key goes to that URL.
+- The CLI talks to one fixed Ignitify address. No flag or environment variable changes it.
 - Every delete and cancel asks first. Without a terminal it is refused unless `--yes` is given. `--force` unlocks a refusal; it never skips the question.
 - No server, no key: `task:create --local`, `task:validate` (without `--review-packages`), `task:pack`, `task:deploy --check`, `help`.
 

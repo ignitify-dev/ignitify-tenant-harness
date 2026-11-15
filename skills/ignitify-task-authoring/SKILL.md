@@ -15,7 +15,7 @@ Read `ignitify-getting-started` first for the safety rules.
 - The folder goes under `--dir`, else `$IGNITIFY_TASKS_DIR`, else `./tasks`. The folder name must equal `slug`.
 - Go and Rust tasks get the runtime client in an `ignitify/` folder. Do not edit it and do not write it by hand: always scaffold Go and Rust.
 - Without `--local`, `task:create` also registers the slug on the server. A slug is reserved forever. Ask the user first.
-- Starter `task.yaml` files and small working examples for each runtime: https://github.com/saeed-vayghan/ignitify-tenant-harness (folders `templates/task-yaml/` and `examples/`).
+- Starter `task.yaml` files and small working examples for each runtime: https://github.com/ignitify-dev/ignitify-tenant-harness (folders `templates/task-yaml/` and `examples/`).
 
 ## Runtimes
 

@@ -1,7 +1,7 @@
 #!/bin/sh
 # Install the Ignitify tenant harness for an AI client. No root, no npm.
 #
-#   curl -fsSL https://raw.githubusercontent.com/saeed-vayghan/ignitify-tenant-harness/v0.1.0/install.sh | sh -s -- --client claude-code
+#   curl -fsSL https://raw.githubusercontent.com/ignitify-dev/ignitify-tenant-harness/v0.1.0/install.sh | sh -s -- --client claude-code
 #
 # Options:
 #   --client claude-code|generic   what to install (required)
@@ -34,7 +34,7 @@ USAGE
 }
 
 HARNESS_VERSION="v0.1.0"
-REPO="saeed-vayghan/ignitify-tenant-harness"
+REPO="ignitify-dev/ignitify-tenant-harness"
 NAME="ignitify-tenant-harness"
 MANIFEST_NAME=".ignitify-harness.manifest"
 
@@ -189,7 +189,8 @@ Next steps:
   2. Optional, recommended: add the permission rules of clients/claude-code/settings.example.json
      (in the harness repository) to your .claude/settings.json. They allow read-only ignitify
      commands, ask before writes, and deny deletes, secrets, webhooks and sign-in.
-  3. The Ignitify key on this machine has full power. Review every write your AI client proposes.
+  3. Treat the Ignitify key on this machine as full access (read-only AI users are planned).
+     Review every write your AI client proposes.
 Remove: $remove_hint
 EOF
 else
@@ -197,7 +198,8 @@ else
 Next steps:
   1. Copy the block in $base/AGENTS.md into your project's AGENTS.md (or the instruction file of your AI client).
   2. Point your client at $base/skills/ (start with ignitify-getting-started/SKILL.md).
-  3. The Ignitify key on this machine has full power. Review every write your AI client proposes.
+  3. Treat the Ignitify key on this machine as full access (read-only AI users are planned).
+     Review every write your AI client proposes.
 Remove: $remove_hint
 EOF
 fi

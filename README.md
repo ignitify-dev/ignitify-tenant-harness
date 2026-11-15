@@ -26,7 +26,7 @@ You need the Ignitify CLI first: `npm install --global ignitify` (Node 22.13 or 
 ### Claude Code, as a plugin
 
 ```
-/plugin marketplace add saeed-vayghan/ignitify-tenant-harness
+/plugin marketplace add ignitify-dev/ignitify-tenant-harness
 /plugin install ignitify@ignitify-tenant-harness
 ```
 
@@ -38,10 +38,10 @@ The script downloads one tagged release, checks its SHA-256, and copies files. I
 
 ```sh
 # Claude Code: skills and commands into ~/.claude (or ./.claude with --scope project)
-curl -fsSL https://raw.githubusercontent.com/saeed-vayghan/ignitify-tenant-harness/v0.1.0/install.sh | sh -s -- --client claude-code
+curl -fsSL https://raw.githubusercontent.com/ignitify-dev/ignitify-tenant-harness/v0.1.0/install.sh | sh -s -- --client claude-code
 
 # Any other client: files into ./.ignitify-harness, then add the AGENTS.md block to your project
-curl -fsSL https://raw.githubusercontent.com/saeed-vayghan/ignitify-tenant-harness/v0.1.0/install.sh | sh -s -- --client generic
+curl -fsSL https://raw.githubusercontent.com/ignitify-dev/ignitify-tenant-harness/v0.1.0/install.sh | sh -s -- --client generic
 ```
 
 Options: `--version <tag>`, `--sha256 <hex>` (the checksum from the release notes; stronger than the published `.sha256` file), `--from <checkout>` (no download), `--force`, `--uninstall`. Read the script before you run it.
@@ -52,13 +52,22 @@ Copy `skills/` into the skills folder of your client, and the block in `clients/
 
 ## Safety
 
-**Today, any Ignitify key has full power.** Your AI client uses the key of `ignitify login` on your machine, so it can do anything you can do: deploy, run (which uses your plan and costs compute), cancel and delete. Narrower, short-lived keys for AI clients are planned; this harness will recommend them when they exist.
+**Today, treat the key your AI client uses as full access.** Your AI client uses the key of `ignitify login` on your machine, so it can do anything you can do: deploy, run (which uses your plan and costs compute), cancel and delete.
 
-Until then:
+There is no special key type for AI clients. The planned way to limit a client: as the tenant owner, create a user in a read-only group and give that user's key to the AI client:
+
+```sh
+ignitify group:create readers --permissions tasks.read,deployments.read,runs.read,usage.read  # planned
+ignitify user:create ai-assistant  # planned
+ignitify group:add-user readers ai-assistant  # planned
+ignitify key:create --user ai-assistant --label laptop --out ./ai-assistant.key  # planned
+```
+
+These commands are planned, not shipped yet. Until then, use your normal key and treat it as full access, and:
 
 1. The skills tell the client to read freely, ask before every write, and never run deletes, secret commands, webhook creation, `login` or `logout`. These are instructions, not a lock: a client can ignore them.
 2. In Claude Code, add the rules of `clients/claude-code/settings.example.json` to your `.claude/settings.json`. They allow read-only `ignitify` commands, ask before writes, and deny the destructive and secret commands. A plugin cannot set permissions for you. The rules match command prefixes only: they do not stop `cat` of the key file, and they cover `~/.config/ignitify` but not a custom `$XDG_CONFIG_HOME`.
-3. Do not export `IGNITIFY_API_KEY` in the shell your AI client uses; let it use the saved login. Every command takes a hidden `--api <url>` flag, and with `IGNITIFY_API_KEY` set the CLI sends the key to that address. A saved login is bound to its own address and refuses another one.
+3. Do not export `IGNITIFY_API_KEY` in the shell your AI client uses; let it use the saved login, so the key value stays out of the client's environment. The CLI talks to one fixed Ignitify address; no flag changes it.
 4. Review every command your client proposes. Do not approve `--yes` on a delete you did not ask for.
 5. Your client sends what it reads (run logs, results, `task.yaml`) to its model vendor. Keep secrets out of logs and results.
 6. Run logs and results are written by code. The skills tell the client to treat them as data, not as instructions.
