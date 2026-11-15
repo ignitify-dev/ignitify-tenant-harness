@@ -49,6 +49,7 @@ There is no version number. Each deployment is one version.
 - `ignitify task:get <slug>` shows the deploys and runs of one task. It reads the local task folder first, so run it where `--dir` (or `$IGNITIFY_TASKS_DIR`) finds the folder.
 - `ignitify task:run <slug>` runs the task's latest deployment. If the latest build failed or still builds, the run is refused.
 - `ignitify task:run <slug> --deployment <id>` runs an older, `READY` deployment (a roll back for one run).
+- A script that deploys, then runs, and may retry: a repeat of `task:deploy` after a network error never builds twice (the dedup key), then run the deployment id it printed with `ignitify task:run <slug> --deployment <id> --idempotency-key <key>`. Never retry `task:run` without the key (see `ignitify-runs`).
 - A webhook belongs to one deployment. After a new deploy, the user must create a webhook for the new deployment (see `ignitify-runs`).
 
 ## When the build fails

@@ -16,6 +16,6 @@ Run these first. All are read-only:
 2. For a run id: `ignitify run:get $ARGUMENTS --json` and `ignitify run:timeline $ARGUMENTS`
 3. For a deployment id: `ignitify deployment:get $ARGUMENTS`
 
-If the CLI does not know `run:timeline` (CLI 1.2.2), leave that block out. Fill every field of the template. Copy the `server trace id` lines exactly. For a run, the trace id is the run's `correlation_id` from `run:get --json`. Ask the user what they expected and what they tried.
+Fill every field of the template. Copy the `server trace id` lines exactly. For a run, the trace id is the run's `correlation_id` from `run:get --json`. Ask the user what they expected and what they tried.
 
 Before you show the report, remove every API key, token, password, secret value and personal data. Never include `~/.config/ignitify/credentials.json` or any `.env` file. Show the report to the user; do not send it anywhere.

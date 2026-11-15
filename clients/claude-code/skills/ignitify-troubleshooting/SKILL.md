@@ -1,6 +1,6 @@
 ---
 name: ignitify-troubleshooting
-description: Diagnose and fix Ignitify failures at the tenant level - a failed or stuck run, a failed build, a refused request (API 401, 403, 413, 429), a plan limit, a blocked network call, a missing secret, a webhook that does not start a run - with a step-by-step flow, the error catalogue and what to collect before contacting support. Use it whenever an `ignitify` command prints `Error:` or a run is not COMPLETED.
+description: Diagnose and fix Ignitify failures at the tenant level - a failed or stuck run, a failed build, a refused request (API 401, 403, 413, 429, permission denied, owner key required), a plan limit, a blocked network call, a missing secret, a webhook that does not start a run - with a step-by-step flow, the error catalogue and what to collect before contacting support. Use it whenever an `ignitify` command prints `Error:` or a run is not COMPLETED.
 license: Apache-2.0
 ---
 
@@ -63,6 +63,9 @@ For a task that fails often, start with `ignitify run:failures --days 7` and `ig
 | `Error: API 403 … not included in your current tier` | The plan lacks a capability | `ignitify whoami`, the `may_…` lines. |
 | `Error: API 401` | The key is wrong, revoked or expired (90 days without use) | The user runs `ignitify login`. |
 | `Not signed in.` | No saved key and no `IGNITIFY_API_KEY` | The user runs `ignitify login`. |
+| `permission denied: this key needs the <permission> permission` | A user key whose groups lack that permission | Stop. Tell the user the command needs `<permission>`: ask the owner to grant it to your group (`ignitify group:grant <group> <permission>`, owner only). Do not retry, and do not look for another key. |
+| `owner key required` | A user key on a `user:*`, `group:*` or `key:*` command | Only the tenant owner manages access. An AI client never runs these commands. |
+| `this is the answer to an earlier request with the same --idempotency-key` | A retry of `task:run` with the same key | Not an error: no second run started. The run id is the first one's. |
 | `Cannot reach <address> (…)` | Network, DNS or TLS on this machine | Check the network; the reason in brackets names it. |
 | `unknown flag --x for <command>` | Typo or wrong command | `ignitify help <command>`. |
 | `Refusing to proceed: not a TTY` | A delete in a script | The user runs it in a terminal. Do not add `--yes`. |

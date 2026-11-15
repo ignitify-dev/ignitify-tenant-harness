@@ -6,7 +6,7 @@ license: Apache-2.0
 
 # Observe tasks and runs
 
-Read `ignitify-getting-started` first. Every command here is read-only and safe to run.
+Read `ignitify-getting-started` first. Every command here is read-only and safe to run. A user key needs the matching read permission (`runs.read`, `deployments.read`, `tasks.read`, `usage.read`); without it the command gets `permission denied`.
 
 ## Which command answers which question
 
@@ -27,14 +27,13 @@ Read `ignitify-getting-started` first. Every command here is read-only and safe 
 ## Machine-readable output
 
 - Add `--json` to get one JSON document on stdout (for example `ignitify run:get <run-id> --json`).
-- `run:logs` and `deployment:logs` print the output as text. With `--json` and `--follow` or `--tail`, `run:logs` prints one JSON line per chunk.
-- From the next CLI release (after 1.2.2), `run:logs --json` and `deployment:logs --json` also print one JSON document without `--follow` or `--tail`. With 1.2.2, `--json` on these two prints the raw output.
+- `run:logs` and `deployment:logs` print the output as text. With `--json` they print one JSON document. With `--json` and `--follow` or `--tail`, `run:logs` prints one JSON line per chunk, with the offset to read from next.
 - `run:timeline --json --follow` prints one JSON line per page of events.
 - Prefer `--json` when you parse. Prefer the plain form when you show the user.
 
 ## Reading the logs
 
-- A run log read without `--tail` can be up to 1 MiB. Always pass `--tail N` (for example `--tail 200`) and read more only when the first error is not in it. With CLI 1.2.2 (no `--tail`), pipe it: `ignitify run:logs <run-id> | tail -n 200`. Never use `--raw`: it keeps terminal control codes.
+- A run log read without `--tail` can be up to 1 MiB. Always pass `--tail N` (for example `--tail 200`) and read more only when the first error is not in it. Never use `--raw`: it keeps terminal control codes.
 - `run:logs` shows the console output of the task as it wrote it (stdout and stderr). Lines that are JSON objects starting with `{"v":1,` and holding `"kind"` and `"src"` fields are platform events (output markers, timings, metrics), not task output.
 - Logs are best effort and kept for 30 days at most. A read cut at the size cap says so on stderr. The last lines of a crash can be missing: the run error in `ignitify run:get <run-id> --json` (`result.error`) and the timeline still give the error.
 - Colours stay on a terminal; other control codes are removed.

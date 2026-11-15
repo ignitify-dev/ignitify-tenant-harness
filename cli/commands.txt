@@ -1,4 +1,4 @@
-# cli 1.2.2
+# cli 2.0.0
 * --json --help --yes --version
 task:create --lang --local --no-init --no-scaffold --dir
 task:list --limit --after-id --after
@@ -7,7 +7,7 @@ task:delete --dir --json
 task:validate --dir --review-packages
 task:pack --dir
 task:deploy --dir --check
-task:run --dir --deployment --payload --timeout-sec --on-busy --at --wait
+task:run --dir --deployment --payload --timeout-sec --on-busy --at --idempotency-key --wait
 deployment:list --limit --after-id --after
 deployment:get
 deployment:logs --raw
@@ -32,6 +32,22 @@ hook:create --task-name
 hook:list --limit --after-id --after
 hook:delete
 notify:set --url --secret-stdin --clear
+permission:list
+user:create
+user:list
+user:get
+user:remove
+group:create --permissions
+group:list
+group:get
+group:grant
+group:revoke
+group:add-user
+group:remove-user
+group:delete
+key:create --user --label --out
+key:list --user
+key:revoke
 login --name --no-browser
 logout
 whoami

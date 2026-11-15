@@ -5,6 +5,7 @@
       "Bash(ignitify --version)",
       "Bash(ignitify help *)",
       "Bash(ignitify whoami *)",
+      "Bash(ignitify permission:list *)",
       "Bash(ignitify quota *)",
       "Bash(ignitify usage *)",
       "Bash(ignitify usage:series *)",
@@ -46,12 +47,15 @@
       "Bash(ignitify hook:create *)",
       "Bash(ignitify hook:delete *)",
       "Bash(ignitify notify:set *)",
+      "Bash(ignitify user*)",
+      "Bash(ignitify group*)",
       "Bash(ignitify key*)",
       "Bash(ignitify login *)",
       "Bash(ignitify logout *)",
       "Bash(env)",
       "Bash(printenv *)",
-      "Read(~/.config/ignitify/**)"
+      "Read(~/.config/ignitify/**)",
+      "Read(~/ignitify-ai-assistant.key)"
     ]
   }
 }

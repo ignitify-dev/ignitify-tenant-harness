@@ -18,8 +18,6 @@ Run these first, in this order. All are read-only:
 2. `ignitify run:timeline $ARGUMENTS`
 3. `ignitify run:logs $ARGUMENTS --tail 200`
 
-If the CLI does not know `run:timeline` or `--tail` (CLI 1.2.2), skip step 2 and run `ignitify run:logs $ARGUMENTS | tail -n 200` for step 3.
-
 Then read `task.yaml` and the entry file of the task named in the run. If the failure class is `limit`, also run `ignitify quota`.
 
 Report:

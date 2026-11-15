@@ -1,6 +1,6 @@
 ---
 name: ignitify-runs
-description: Start and control Ignitify runs - task:run with --payload, --wait, --timeout-sec, --on-busy, --deployment and --at; run statuses; retries and duplicate runs; scheduled runs (schedule:list, schedule:cancel); webhooks that start runs (hook:create, signing); end-of-run callbacks (notify:set); and run:cancel. Use it when the user wants to run a task, pass input, run later, trigger from another system, or stop a run.
+description: Start and control Ignitify runs - task:run with --payload, --wait, --timeout-sec, --on-busy, --deployment, --at and --idempotency-key; run statuses; safe retries with no duplicate run; scheduled runs (schedule:list, schedule:cancel); webhooks that start runs (hook:create, signing); end-of-run callbacks (notify:set); and run:cancel. Use it when the user wants to run a task, pass input, run later, trigger from another system, or stop a run.
 license: Apache-2.0
 ---
 
@@ -23,6 +23,7 @@ ignitify task:run <slug> --payload '{"name":"Ada"}' --wait
 | `--on-busy queue\|reject` | When the run cannot start at once: `queue` (default) waits for room for a limited time, `reject` fails at once. |
 | `--deployment <id>` | Run this deployment, not the latest one. |
 | `--at <iso>` | Run later (below). |
+| `--idempotency-key <key>` | Start at most one run for this key. A retry with the same key gets the first answer (below). |
 | `--dir <base-dir>` | Folder that holds the task folders. |
 
 Without `--wait`, `task:run` returns at once with the run id and status `PENDING`. Follow it with `ignitify run:get <run-id>` or `ignitify run:timeline <run-id> --follow`. Ctrl+C stops the wait, not the run. `task.yaml` is never written by these flags.
@@ -45,7 +46,18 @@ The platform retries only platform failures. A failure of your code is not retri
 
 ## Do not start a run twice
 
-`task:run` has no idempotency key. If a `task:run` call fails with a network error, the run may still exist. Before you run again, check: `ignitify run:list --task-name <slug> --limit 5`.
+A `task:run` that fails with a network error or a timeout of the CLI call may still have started the run. Retry only with an idempotency key:
+
+```sh
+ignitify task:run <slug> --deployment <deployment-id> --idempotency-key <key> --wait
+```
+
+- Pass `--idempotency-key` on the **first** try, not only on the retry, and keep every other flag the same. A retry with the same key gets the first answer and starts no second run; the CLI says on stderr: `this is the answer to an earlier request with the same --idempotency-key; no new run was started.`
+- Pin `--deployment <id>` (from `ignitify task:deploy` or `ignitify deployment:list`). Without it the run takes the task's latest deploy, and a new deploy between two tries changes the request.
+- The key: 8 to 255 characters of `A-Z a-z 0-9 . _ : -`, for example `<slug>-2027-01-15-1` or a UUID. Use a new key for each new run. The same key with a different run (another payload, deployment or run setting) is refused: "Use a new --idempotency-key for a different run."
+- A refusal that says an earlier request with this key may still be running: retry with the same key shortly.
+- The user agreed to one run. A retry with the same key and the same flags is that same run, not a new one.
+- **Never retry a `task:run` that was sent without a key.** First check whether the run exists: `ignitify run:list --task-name <slug> --limit 5`. Ask the user before a new run.
 
 A webhook call can carry an `x-ignitify-delivery` header: a repeated value returns the same run.
 
@@ -113,6 +125,6 @@ Ask the user first. `run:delete` deletes the record only and does not stop a liv
 - A big payload. Pass a link; the limit is small (see `ignitify-limits-and-cost`).
 - Treating a run with no `--wait` as finished. It is `PENDING`.
 - `--on-busy queue` does not wait for the plan's run limits. Those give `API 429` at once.
-- A second `task:run` after a timeout of the CLI call. Check `run:list` first.
+- A second `task:run` after a timeout of the CLI call with no `--idempotency-key`. Use a key from the first try; without one, check `run:list` first.
 
 Docs: https://ignitify.dev/docs/guides/pass-input-and-read-results

@@ -10,6 +10,8 @@ Each entry: what you see, what it means, the fix. Words after `Error:` can chang
 | Capacity | `host-capacity` | Wait a short time and try again. It never names a plan. |
 | Capability | (403, names the capability) | Change what you declare, or the plan. |
 
+A user key can also be refused by its permissions (403, below: "Access"). That is not a plan limit.
+
 ## Plan limits
 
 | `reason` | You see | Meaning and fix |
@@ -46,6 +48,18 @@ A webhook gets the same 429 and starts no run. A scheduled run waits and tries a
 | `The saved key is for <address>, not <address>.` | The saved login belongs to another API address. The user signs in again. |
 | `… can be read by other users (mode 0…). Run: chmod 600 …` | The saved key file is too open. The user runs the `chmod`. |
 
+## Access (user keys)
+
+A user key holds only the permissions of its user's groups. `ignitify whoami` shows them in the "This Key" block; `ignitify permission:list` lists them all.
+
+| You see | Meaning and fix |
+| :-- | :-- |
+| `Error: permission denied: this key needs the <permission> permission. Ask the owner to grant it to one of your groups.` | Reason `permission-denied`. The key is a user key and none of its groups grants `<permission>`. An AI client stops and tells the user which permission the command needs. The owner decides: `ignitify group:grant <group> <permission>`. Do not retry, and do not switch to another key. |
+| `Error: owner key required: only owner keys manage users, groups and keys. This is a user key.` | Reason `owner-required`. `user:*`, `group:*` and `key:*` need an owner key (from `ignitify login`). The tenant owner runs them; an AI client never does. |
+| `Error: user name "…" is not valid: use 1 to 63 lower case letters, digits and '-', starting with a letter or digit` (or `group name`) | A user or group name breaks the name rule. Checked before anything is sent. |
+| `Error: unknown permission "…"` | Not one of the 11 permissions. `ignitify permission:list`. |
+| `key:create` exits 1: the server answered without the key (a replay of an earlier request) | The key exists but is not shown again. The owner revokes it (`ignitify key:revoke <key-id>`) and creates another. |
+
 ## Deploys and builds
 
 | You see | Meaning and fix |
@@ -65,6 +79,10 @@ A webhook gets the same 429 and starts no run. A scheduled run waits and tries a
 | Run `FAILED` with `result exceeds max size (…)` | The result is over the limit. Return less. |
 | A storage note: `storage_mib N is below the <preset> default …` | Not an error. The run uses the preset default. |
 | `schedule:cancel` exits 1 with "0 rows" | The schedule already fired or is firing. Look for the run in `ignitify run:list`. |
+| `Error: --idempotency-key must be 8 to 255 characters of A-Z a-z 0-9 . _ : -, got: …` | Use a key of that form. Checked before anything is sent. |
+| `this is the answer to an earlier request with the same --idempotency-key; no new run was started.` | Not an error. The retry got the first run's answer. |
+| A refused keyed run with the hint `Use a new --idempotency-key for a different run.` | The key was used before for a different request (another payload, deployment or flag). A retry must repeat the first request exactly; a new run needs a new key. Pin `--deployment` in a retrying script. |
+| A refused keyed run with the hint `If an earlier request with this key is still running, retry with the same key shortly.` | The first request with this key may still be in progress. Wait a moment, then retry with the same key and flags. |
 
 ## Scripts
 
