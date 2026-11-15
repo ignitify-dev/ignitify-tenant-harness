@@ -1,0 +1,15 @@
+schema_version: 1
+slug: node-github-stars         # must equal the folder name
+runtime: node
+
+execution:
+  duration: short
+  network:
+    type: egress                # outbound only
+    egress_allow: [api.github.com]   # the only host the task may reach
+
+run:
+  payload:
+    repo: nodejs/node
+  preset: std.micro
+  timeout_sec: 60

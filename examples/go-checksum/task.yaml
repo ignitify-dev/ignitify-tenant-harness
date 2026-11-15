@@ -1,0 +1,14 @@
+schema_version: 1
+slug: go-checksum               # must equal the folder name
+runtime: go
+
+execution:
+  duration: short
+  network:
+    type: none
+
+run:
+  payload:
+    text: hello
+  preset: std.micro
+  timeout_sec: 30

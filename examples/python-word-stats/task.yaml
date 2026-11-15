@@ -1,0 +1,15 @@
+schema_version: 1
+slug: python-word-stats         # must equal the folder name
+runtime: python
+
+execution:
+  duration: short
+  network:
+    type: none                  # no network at all
+
+run:
+  payload:
+    text: "the quick brown fox jumps over the lazy dog the end"
+    top: 3
+  preset: std.micro
+  timeout_sec: 30

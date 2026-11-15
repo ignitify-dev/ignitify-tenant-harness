@@ -1,0 +1,20 @@
+# task.yaml starter: a Python task that computes with no network.
+# Files beside it: main.py (def run(payload, ctx), optional def init()),
+# requirements.txt (the lockfile: every line pinned with --hash; see its header).
+schema_version: 1
+slug: my-python-task            # must equal the folder name
+runtime: python                 # Python 3.11; entry: main.py
+
+execution:
+  duration: short
+  network:
+    type: none                  # the default: no network at all
+
+run:
+  payload: {}
+  preset: std.small
+  timeout_sec: 60
+
+# Debian tools the task runs (bare names, no versions). Uncomment if needed.
+# build:
+#   system_packages: [ffmpeg]

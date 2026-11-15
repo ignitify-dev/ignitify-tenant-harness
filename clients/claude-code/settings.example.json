@@ -1,0 +1,57 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ignitify --version)",
+      "Bash(ignitify help *)",
+      "Bash(ignitify whoami *)",
+      "Bash(ignitify quota *)",
+      "Bash(ignitify usage *)",
+      "Bash(ignitify usage:series *)",
+      "Bash(ignitify usage:export *)",
+      "Bash(ignitify notification:list *)",
+      "Bash(ignitify task:list *)",
+      "Bash(ignitify task:get *)",
+      "Bash(ignitify task:validate *)",
+      "Bash(ignitify task:pack *)",
+      "Bash(ignitify deployment:list *)",
+      "Bash(ignitify deployment:get *)",
+      "Bash(ignitify deployment:logs *)",
+      "Bash(ignitify run:list *)",
+      "Bash(ignitify run:get *)",
+      "Bash(ignitify run:logs *)",
+      "Bash(ignitify run:timeline *)",
+      "Bash(ignitify run:failures *)",
+      "Bash(ignitify vm:list *)",
+      "Bash(ignitify vm:get *)",
+      "Bash(ignitify secret:list *)",
+      "Bash(ignitify schedule:list *)",
+      "Bash(ignitify hook:list *)"
+    ],
+    "ask": [
+      "Bash(ignitify task:create *)",
+      "Bash(ignitify task:deploy *)",
+      "Bash(ignitify task:run *)",
+      "Bash(ignitify run:cancel *)",
+      "Bash(ignitify schedule:cancel *)",
+      "Bash(ignitify integration:add *)"
+    ],
+    "deny": [
+      "Bash(ignitify task:delete *)",
+      "Bash(ignitify deployment:delete *)",
+      "Bash(ignitify run:delete *)",
+      "Bash(ignitify vm:delete *)",
+      "Bash(ignitify secret:set *)",
+      "Bash(ignitify secret:delete *)",
+      "Bash(ignitify hook:create *)",
+      "Bash(ignitify hook:delete *)",
+      "Bash(ignitify notify:set *)",
+      "Bash(ignitify login *)",
+      "Bash(ignitify logout *)",
+      "Bash(ignitify * --api *)",
+      "Bash(ignitify * --api=*)",
+      "Bash(env)",
+      "Bash(printenv *)",
+      "Read(~/.config/ignitify/**)"
+    ]
+  }
+}

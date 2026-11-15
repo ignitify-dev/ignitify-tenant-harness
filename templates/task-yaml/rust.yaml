@@ -1,0 +1,17 @@
+# task.yaml starter: a Rust task that runs long and streams progress.
+# Create the folder with: ignitify task:create <slug> --lang rust --local
+# It vendors the runtime client in ignitify/ (do not edit it) and writes src/main.rs, Cargo.toml, Cargo.lock.
+schema_version: 1
+slug: my-rust-task              # must equal the folder name
+runtime: rust                   # entry: src/main.rs
+
+execution:
+  duration: long                # heartbeats keep the run alive past timeout_sec, up to a platform cap
+  interaction: continuous       # ctx.chunk() progress reaches the caller
+  network:
+    type: none
+
+run:
+  payload: {}
+  preset: std.small
+  timeout_sec: 600

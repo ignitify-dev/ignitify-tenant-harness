@@ -1,0 +1,47 @@
+# Ignitify tenant harness
+
+> Knowledge for AI clients that work with Ignitify through the `ignitify` CLI: the platform, task authoring, deploys, runs, observation, troubleshooting, limits and cost. Tenant level only. Ignitify makes no model calls for the client; the client uses its own model.
+
+Start with skills/ignitify-getting-started/SKILL.md. The installed CLI is the authority: `ignitify help <command>`.
+
+## Skills
+
+- [Getting started](skills/ignitify-getting-started/SKILL.md): what Ignitify is, install, sign in, safety rules for AI clients
+- [Task authoring](skills/ignitify-task-authoring/SKILL.md): task.yaml, runtimes, ctx API, execution nature, network, system packages, upload rules
+- [Deploy](skills/ignitify-deploy/SKILL.md): validate, pack, deploy, deployment status, versions, build failures
+- [Runs](skills/ignitify-runs/SKILL.md): task:run flags, run status, duplicate runs, schedules, webhooks, notify, cancel
+- [Secrets](skills/ignitify-secrets/SKILL.md): declare names, the user sets values, ctx.secrets
+- [Integrations](skills/ignitify-integrations/SKILL.md): integration:add for Node tasks
+- [Observe](skills/ignitify-observe/SKILL.md): run:get, run:logs, run:timeline, run:failures, --json
+- [Troubleshooting](skills/ignitify-troubleshooting/SKILL.md): diagnosis flow, failure patterns, before contacting support
+- [Error catalogue](skills/ignitify-troubleshooting/errors.md): every tenant error line, meaning and fix
+- [Support report template](skills/ignitify-troubleshooting/support-report.md)
+- [Limits and cost](skills/ignitify-limits-and-cost/SKILL.md): whoami, quota, usage, presets, what costs more
+- [CLI reference](skills/ignitify-cli-reference/SKILL.md): every command, flag, exit code, and who may run it
+
+## Prompts
+
+- [Diagnose a run](prompts/diagnose-run.md)
+- [Write a task](prompts/write-task.md)
+- [Review a task.yaml](prompts/review-task-yaml.md)
+- [Why did my deploy fail](prompts/why-deploy-failed.md)
+- [Prepare a support report](prompts/prepare-support-report.md)
+
+## Templates and examples
+
+- [task.yaml starters](templates/task-yaml/): node.yaml, python.yaml, go.yaml, rust.yaml
+- [node-github-stars](examples/node-github-stars/): outbound network with an allow list
+- [python-word-stats](examples/python-word-stats/): no network, input checks
+- [go-checksum](examples/go-checksum/): Go task code on top of the scaffold
+- [rust-countdown](examples/rust-countdown/): progress chunks with interaction: continuous
+
+## Clients
+
+- [Claude Code plugin](clients/claude-code/): skills and slash commands
+- [Claude Code permission rules](clients/claude-code/settings.example.json)
+- [AGENTS.md block for any client](clients/generic/AGENTS.md)
+
+## Optional
+
+- [CLI command snapshot](cli/commands.txt)
+- [Public Ignitify docs](https://ignitify.dev/docs)

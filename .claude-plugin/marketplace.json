@@ -1,0 +1,12 @@
+{
+  "name": "ignitify-tenant-harness",
+  "owner": { "name": "Ignitify" },
+  "description": "The Ignitify tenant harness for Claude Code.",
+  "plugins": [
+    {
+      "name": "ignitify",
+      "source": "./clients/claude-code",
+      "description": "Skills and commands for the Ignitify platform and the ignitify CLI."
+    }
+  ]
+}

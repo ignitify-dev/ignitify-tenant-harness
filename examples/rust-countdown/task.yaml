@@ -1,0 +1,15 @@
+schema_version: 1
+slug: rust-countdown            # must equal the folder name
+runtime: rust
+
+execution:
+  duration: short
+  interaction: continuous       # ctx.chunk() progress reaches the caller
+  network:
+    type: none
+
+run:
+  payload:
+    from: 5
+  preset: std.micro
+  timeout_sec: 60

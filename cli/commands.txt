@@ -1,0 +1,43 @@
+# cli 1.2.2
+* --json --help --yes --version
+task:create --lang --local --no-init --no-scaffold --dir
+task:list --limit --after-id --after
+task:get --dir
+task:delete --dir --json
+task:validate --dir --review-packages
+task:pack --dir
+task:deploy --dir --check
+task:run --dir --deployment --payload --timeout-sec --on-busy --at --wait
+deployment:list --limit --after-id --after
+deployment:get
+deployment:logs --raw
+deployment:delete
+run:list --status --deployment-id --task-name --preset --correlation-id --vm-id --limit --after-id --after
+run:get --full
+run:logs --raw --follow --tail
+run:timeline --follow
+run:failures --days --json
+run:delete
+run:cancel --force --grace
+vm:list --pinned --deployment-id --task-name --preset --older-than --limit --after-id --after
+vm:get
+vm:delete --force
+secret:set --stdin
+secret:list
+secret:delete
+integration:add --task --dry-run --dir
+schedule:list
+schedule:cancel
+hook:create --task-name
+hook:list --limit --after-id --after
+hook:delete
+notify:set --url --secret-stdin --clear
+login --name --no-browser
+logout
+whoami
+quota
+usage --period --axis --vm --run --runs --vms --json
+usage:export --period --axis --vm --run --json --csv
+usage:series --days --json
+notification:list --unread --open --kind --limit --json
+help

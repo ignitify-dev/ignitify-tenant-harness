@@ -1,0 +1,19 @@
+# task.yaml starter: a Node task that calls one HTTPS API.
+# Files beside it: index.ts (exports run, optional init), package.json, package-lock.json.
+# Check it offline: ignitify task:validate <slug>
+schema_version: 1
+slug: my-node-task              # must equal the folder name
+runtime: node                   # entry: index.ts
+
+secrets: [API_TOKEN]            # names only; the user sets values with: ignitify secret:set API_TOKEN --stdin
+
+execution:
+  duration: short               # one short job per run
+  network:
+    type: egress                # outbound only
+    egress_allow: [api.example.com]   # the only host the task may reach
+
+run:
+  payload: {}                   # default input; keep it small, pass links for big data
+  preset: std.micro
+  timeout_sec: 120

@@ -1,0 +1,19 @@
+# task.yaml starter: a Go task started by a webhook that calls one HTTPS API.
+# Create the folder with: ignitify task:create <slug> --lang go --local
+# It vendors the runtime client in ignitify/ (do not edit it) and writes main.go, go.mod, go.sum.
+schema_version: 1
+slug: my-go-task                # must equal the folder name
+runtime: go                     # entry: main.go
+
+secrets: [API_TOKEN]            # read as ctx.Secrets["API_TOKEN"]
+
+execution:
+  cardinality: many             # a warm VM can serve the next webhook without a cold boot
+  network:
+    type: egress
+    egress_allow: [api.example.com]
+
+run:
+  payload: {}
+  preset: std.micro
+  timeout_sec: 300

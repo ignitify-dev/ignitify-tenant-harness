@@ -1,0 +1,10 @@
+{
+  "name": "ignitify",
+  "version": "0.1.0",
+  "description": "Ignitify tenant harness: skills and commands that teach Claude Code the Ignitify platform, the ignitify CLI, and tenant-level troubleshooting.",
+  "author": { "name": "Ignitify" },
+  "homepage": "https://ignitify.dev/docs",
+  "repository": "https://github.com/saeed-vayghan/ignitify-tenant-harness",
+  "license": "Apache-2.0",
+  "keywords": ["ignitify", "microvm", "tasks", "cli", "troubleshooting"]
+}
