@@ -6,7 +6,7 @@ This project builds and runs tasks on Ignitify. Use the `ignitify` CLI for every
 Knowledge: the Ignitify skills are in `.ignitify-harness/skills/` (one folder per topic, each with a `SKILL.md`). Start with `ignitify-getting-started`. When something fails, read `ignitify-troubleshooting`. The installed CLI is the authority: `ignitify help <command>`.
 
 Rules:
-- Needs ignitify CLI 2.0.0 or newer. Run `ignitify whoami` first and read its "This Key" block: user `owner` means full access; a user name means only the permissions listed (best: a read-only user, see `ignitify-getting-started`). Either way, read freely and ask the user before any write.
+- Needs ignitify CLI 3.1.0 or newer. Run `ignitify whoami` first and read its "This Key" block: user `owner` means full access; a user name means only the permissions listed (best: a read-only user, see `ignitify-getting-started`). Either way, read freely and ask the user before any write.
 - Safe to run: `ignitify whoami`, `ignitify quota`, `ignitify usage`, `ignitify permission:list`, and the `:list`, `:get`, `run:logs`, `run:timeline`, `run:failures`, `deployment:logs`, `task:validate`, `task:pack` commands (not the `user:`, `group:` or `key:` ones). Add `--json` when you parse output.
 - Ask first: `task:create` (without `--local`), `task:deploy` (without `--check`), `task:run`, `run:cancel`, `schedule:cancel`, `integration:add` (without `--dry-run`).
 - Retry a `task:run` only with the same `--idempotency-key` and a pinned `--deployment` from the first try; without a key, check `ignitify run:list --task-name <slug>` first.

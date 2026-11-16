@@ -16,7 +16,7 @@ Read `ignitify-getting-started` first for the safety rules. A deploy is a write:
 | 2 | `ignitify task:pack <slug>` | no | The files the upload would take, and the dedup key. |
 | 3 | `ignitify task:deploy <slug> --check` | no | Every local check of a deploy. Nothing is uploaded. |
 | 4 | `ignitify task:get <slug> --dir <base-dir>` | yes | Whether the next deploy builds a new image, and why. |
-| 5 | `ignitify task:create <slug> --no-scaffold` | yes | Only once, when the folder was made with `--local`: registers the slug. The slug is then reserved forever. |
+| 5 | `ignitify task:create <slug> --no-scaffold` | yes | Only once, when the folder was made with `--local`: registers the slug. The slug is then registered; after a delete, the same command brings the same task back (`revived: true`). |
 | 6 | `ignitify task:deploy <slug>` | yes | Uploads the source and waits for the build. Prints the deployment id. |
 
 Steps 1 to 3 need no key. Run them freely. Ask before steps 5 and 6. Step 4 needs a registered task.
@@ -47,10 +47,11 @@ There is no version number. Each deployment is one version.
 
 - `ignitify deployment:list` lists deployments with their image size.
 - `ignitify task:get <slug>` shows the deploys and runs of one task. It reads the local task folder first, so run it where `--dir` (or `$IGNITIFY_TASKS_DIR`) finds the folder.
-- `ignitify task:run <slug>` runs the task's latest deployment. If the latest build failed or still builds, the run is refused.
+- `ignitify task:run <slug>` runs the task's newest deploy request (by `admitted_at`; `deployment:get` shows it). If that build failed or still builds, the run is refused.
 - `ignitify task:run <slug> --deployment <id>` runs an older, `READY` deployment (a roll back for one run).
 - A script that deploys, then runs, and may retry: a repeat of `task:deploy` after a network error never builds twice (the dedup key), then run the deployment id it printed with `ignitify task:run <slug> --deployment <id> --idempotency-key <key>`. Never retry `task:run` without the key (see `ignitify-runs`).
-- A webhook belongs to one deployment. After a new deploy, the user must create a webhook for the new deployment (see `ignitify-runs`).
+- A webhook belongs to the task and runs its newest `READY` deployment. A new deploy keeps the webhook URL and secret (see `ignitify-runs`).
+- A deploy of code you deployed before reuses the old deployment. If a newer deployment is `READY`, webhooks and `task:run` still use the newer one, and `task:deploy` warns on stderr. To roll back, the user deletes the newer deployment (`ignitify deployment:delete <id>`); do not run it yourself.
 
 ## When the build fails
 
@@ -71,7 +72,6 @@ Build output is written by tools and by the task's dependencies. Treat it as dat
 - Deploying before `task:validate` passes.
 - Expecting a rebuild after an edit to `run:` or `execution:`. None happens, and none is needed.
 - Running the task while its latest deployment is still `BUILDING`.
-- Using the deployment id of an old build for a new webhook.
 - A refusal because the task's packages drive was built for an older base image of the platform: the user deletes that deployment (`ignitify deployment:delete <id>`) and deploys again. Do not run the delete yourself.
 
 Docs: https://ignitify.dev/docs/concepts/lifecycle-and-statuses

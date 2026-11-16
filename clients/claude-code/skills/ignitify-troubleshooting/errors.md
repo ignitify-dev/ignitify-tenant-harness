@@ -1,6 +1,6 @@
 # Ignitify error catalogue (tenant)
 
-Each entry: what you see, what it means, the fix. Words after `Error:` can change between CLI versions; the `reason` and `boundBy` fields of an `API <status>` body are stable. The public page is the authority: https://ignitify.dev/docs/reference/errors
+Each entry: what you see, what it means, the fix. Words after `Error:` can change between CLI versions; the code in brackets at the end of a failed request (`Error: <sentence> [<reason>]`) is stable. With `--json`, or from an older CLI, the raw body prints (`Error: API <status>: {…}`); its `reason` and `boundBy` fields are the same stable data. The public page is the authority: https://ignitify.dev/docs/reference/errors
 
 ## Three gates refuse a request
 
@@ -17,10 +17,10 @@ A user key can also be refused by its permissions (403, below: "Access"). That i
 | `reason` | You see | Meaning and fix |
 | :-- | :-- | :-- |
 | `monthly-compute-quota` | `✗ Run refused — a monthly limit is reached (monthly-compute-quota).` | The monthly allowance is used. `ignitify quota` shows when it resets. While a payment has failed, it resets at the next paid renewal. |
-| `concurrent-run-quota` | `Error: API 429: {… "reason":"concurrent-run-quota" …}` | All run slots are in use. `limit` = allowed, `observed` = now. `--on-busy queue` does not wait for it. Wait, or cancel a run. |
-| `run-unit-quota` | `Error: API 429: {… "reason":"run-unit-quota" …}` | The new run needs more units than are free. Each preset has a weight (`ignitify whoami`). Use a lighter preset or wait. |
-| `run-rate-quota` | `Error: API 429: {… "reason":"run-rate-quota", "window":"minute" …}` | Too many runs started in the window. Wait for the window. |
-| (no reason) | `Error: API 429: {"error":"API request rate limit exceeded"}` | Too many API requests per second. Slow the script. |
+| `concurrent-run-quota` | `Error: <sentence> [concurrent-run-quota]` (raw: `API 429: {… "reason":"concurrent-run-quota" …}`) | All run slots are in use. `limit` = allowed, `observed` = now. `--on-busy queue` does not wait for it. Wait, or cancel a run. |
+| `run-unit-quota` | `Error: <sentence> [run-unit-quota]` (raw: `API 429: {… "reason":"run-unit-quota" …}`) | The new run needs more units than are free. Each preset has a weight (`ignitify whoami`). Use a lighter preset or wait. |
+| `run-rate-quota` | `Error: <sentence> [run-rate-quota]` (raw: `API 429: {… "reason":"run-rate-quota", "window":"minute" …}`) | Too many runs started in the window. Wait for the window. |
+| `rate-limited` | `Error: <sentence> [rate-limited]` (raw: `API 429: {"error":"API request rate limit exceeded", …}`) | Too many API requests per second. Slow the script. |
 
 A webhook gets the same 429 and starts no run. A scheduled run waits and tries again for a limited time.
 
@@ -64,7 +64,7 @@ A user key holds only the permissions of its user's groups. `ignitify whoami` sh
 
 | You see | Meaning and fix |
 | :-- | :-- |
-| `Error: task_id not found in .ignitify/state.json — run \`ignitify task:create <task-id>\` first` | The folder was made with `--local` and never registered, or `.ignitify/` was removed. The user registers it once: `ignitify task:create <slug> --no-scaffold` (the slug is reserved forever). |
+| `Error: task_id not found in .ignitify/state.json — run \`ignitify task:create <task-id>\` first` | The folder was made with `--local` and never registered, or `.ignitify/` was removed. The user registers it once: `ignitify task:create <slug> --no-scaffold` (the slug stays registered). |
 | No deployment found for the task | `ignitify task:deploy <slug>` (with consent). |
 | The latest deploy is still building | Wait until `ignitify deployment:get <id>` shows `READY`, or pass `--deployment <older-id>`. |
 | `✗ Build failed` and `Error: deployment … failed to build — the build failed at stage "…"` | `ignitify deployment:get <id>` prints the stage and the log tail. Fix the cause (see `ignitify-deploy`). |
@@ -96,6 +96,7 @@ A user key holds only the permissions of its user's groups. `ignitify whoami` sh
 | :-- | :-- |
 | `401 {"error":"invalid signature"}` | Sign the exact body bytes with HMAC-SHA256, hex, header `x-ignitify-signature: sha256=<hex>`, `content-type: application/json`. |
 | `404 {"error":"unknown hook"}` | The hook id is wrong or deleted. |
+| `409` on a hook call | The task has no `READY` deployment. Deploy it; the hook keeps its URL and secret. |
 | `413 {"error":"payload too large"}` | The body is over the payload limit; it is refused before the signature check. |
 | `429 {"error":"rate limited"}` | Too fast, or a plan run limit. No run started. |
 | `notify url rejected: no-resolution` | The platform cannot resolve the host of the `notify:set` URL. Use a public host name. |

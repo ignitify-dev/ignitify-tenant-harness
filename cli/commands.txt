@@ -1,4 +1,4 @@
-# cli 2.0.0
+# cli 3.1.0
 * --json --help --yes --version
 task:create --lang --local --no-init --no-scaffold --dir
 task:list --limit --after-id --after
@@ -28,7 +28,7 @@ secret:delete
 integration:add --task --dry-run --dir
 schedule:list
 schedule:cancel
-hook:create --task-name
+hook:create
 hook:list --limit --after-id --after
 hook:delete
 notify:set --url --secret-stdin --clear

@@ -21,10 +21,12 @@ ignitify task:run <slug> --payload '{"name":"Ada"}' --wait
 | `--timeout-sec <n>` | Time limit for this run only. Default: `run.timeout_sec`. |
 | `--wait` | Follow the run to its end and print the result. Exit code 0 only when the run is `COMPLETED`. |
 | `--on-busy queue\|reject` | When the run cannot start at once: `queue` (default) waits for room for a limited time, `reject` fails at once. |
-| `--deployment <id>` | Run this deployment, not the latest one. |
+| `--deployment <id>` | Run this deployment, not the newest one. |
 | `--at <iso>` | Run later (below). |
 | `--idempotency-key <key>` | Start at most one run for this key. A retry with the same key gets the first answer (below). |
 | `--dir <base-dir>` | Folder that holds the task folders. |
+
+Without `--deployment` and without local state, `task:run` runs the task's newest deploy request (by `admitted_at`). A redeploy of earlier code brings back its old deployment, and that deployment then counts as the newest.
 
 Without `--wait`, `task:run` returns at once with the run id and status `PENDING`. Follow it with `ignitify run:get <run-id>` or `ignitify run:timeline <run-id> --follow`. Ctrl+C stops the wait, not the run. `task.yaml` is never written by these flags.
 
@@ -53,7 +55,7 @@ ignitify task:run <slug> --deployment <deployment-id> --idempotency-key <key> --
 ```
 
 - Pass `--idempotency-key` on the **first** try, not only on the retry, and keep every other flag the same. A retry with the same key gets the first answer and starts no second run; the CLI says on stderr: `this is the answer to an earlier request with the same --idempotency-key; no new run was started.`
-- Pin `--deployment <id>` (from `ignitify task:deploy` or `ignitify deployment:list`). Without it the run takes the task's latest deploy, and a new deploy between two tries changes the request.
+- Pin `--deployment <id>` (from `ignitify task:deploy` or `ignitify deployment:list`). Without it the run takes the task's newest deploy, and a new deploy between two tries changes the request.
 - The key: 8 to 255 characters of `A-Z a-z 0-9 . _ : -`, for example `<slug>-2027-01-15-1` or a UUID. Use a new key for each new run. The same key with a different run (another payload, deployment or run setting) is refused: "Use a new --idempotency-key for a different run."
 - A refusal that says an earlier request with this key may still be running: retry with the same key shortly.
 - The user agreed to one run. A retry with the same key and the same flags is that same run, not a new one.
@@ -80,8 +82,8 @@ ignitify schedule:cancel <sch-id>
 The user creates the webhook. Do not run `hook:create` yourself: its reply shows a signing secret once, and that secret must not go into your context.
 
 ```sh
-ignitify hook:create <deployment-id> --task-name <slug>   # the user runs this
-ignitify hook:list <deployment-id>                        # safe to run
+ignitify hook:create <slug>   # the user runs this
+ignitify hook:list <slug>     # safe to run; also says which deployment the hook runs now
 ```
 
 The sender signs the exact body: `x-ignitify-signature: sha256=<hex HMAC-SHA256 of the body, key = the secret>`, with `content-type: application/json`. The body becomes the run payload.
@@ -94,7 +96,7 @@ The sender signs the exact body: `x-ignitify-signature: sha256=<hex HMAC-SHA256 
 | 413 | Body over the payload limit. |
 | 429 | Rate limit or the plan's run limit. No run started. |
 
-- A webhook belongs to one deployment. A new deploy needs a new webhook.
+- A webhook belongs to the task. Each run it starts uses the task's newest `READY` deployment, so a new deploy keeps the URL and the secret. With no `READY` deployment, a delivery is refused with 409.
 - Webhooks need a plan that allows them (`ignitify whoami`, the `may_…` lines). Otherwise `hook:create` gets `API 403`.
 - A webhook run always uses the preset's default disk.
 

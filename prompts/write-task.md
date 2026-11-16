@@ -24,4 +24,4 @@ Then:
 - add dependencies with the runtime's own tool so that the lockfile is right;
 - run `ignitify task:validate <slug>` and `ignitify task:deploy <slug> --check` until both pass.
 
-Stop there. Show the user the files and the commands to register the slug once (`ignitify task:create <slug> --no-scaffold`; it is then reserved forever), deploy and run. For a run that a script may retry, show `ignitify task:run <slug> --deployment <deployment-id> --idempotency-key <key> --wait` (see `ignitify-runs`). Do not run `task:create` without `--local`, `task:deploy` or `task:run` unless the user says so.
+Stop there. Show the user the files and the commands to register the slug once (`ignitify task:create <slug> --no-scaffold`; the slug is then registered on the server), deploy and run. For a run that a script may retry, show `ignitify task:run <slug> --deployment <deployment-id> --idempotency-key <key> --wait` (see `ignitify-runs`). Do not run `task:create` without `--local`, `task:deploy` or `task:run` unless the user says so.

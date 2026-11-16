@@ -6,7 +6,7 @@ license: Apache-2.0
 
 # CLI reference
 
-Checked against ignitify CLI 2.0.0; the harness needs 2.0.0 or newer. When the installed CLI differs, `ignitify help <command>` wins.
+Checked against ignitify CLI 3.1.0; the harness needs 3.1.0 or newer. When the installed CLI differs, `ignitify help <command>` wins.
 
 ## Rules for every command
 
@@ -14,7 +14,7 @@ Checked against ignitify CLI 2.0.0; the harness needs 2.0.0 or newer. When the i
 - Global flags: `--json` (one JSON document on stdout), `-h` / `--help`, `-y` / `--yes` (answer a delete's question), `-v` / `--version` (first word only).
 - Environment: `IGNITIFY_API_KEY` (a key; wins over the saved login), `IGNITIFY_TASKS_DIR` (folder of task folders; default `tasks`), `NO_COLOR`.
 - Exit codes: 0 success; 1 error or refusal; 130 Ctrl+C during a wait. `task:run --wait` and an ended `run:timeline` exit 0 only for `COMPLETED`.
-- Errors are text on stderr (also with `--json`), with `server trace id: …` after a failed request.
+- Errors are text on stderr (also with `--json`), with `server trace id: …` after a failed request. A failed request prints the server's sentence and its stable code: `Error: secret not found [secret-not-found]`. Decide on the code in brackets, not on the sentence. With `--json` the raw error body may print instead.
 - The CLI talks to one fixed Ignitify address. No flag or environment variable changes it.
 - Every delete and cancel asks first. Without a terminal it is refused unless `--yes` is given. `--force` unlocks a refusal; it never skips the question.
 - No server, no key: `task:create --local`, `task:validate` (without `--review-packages`), `task:pack`, `task:deploy --check`, `permission:list`, `help`.
@@ -70,8 +70,8 @@ Checked against ignitify CLI 2.0.0; the harness needs 2.0.0 or newer. When the i
 | `integration:add` | `ignitify integration:add <name> --task <slug> [--yes \| --dry-run] [--dir <base-dir>]` | ask (with `--dry-run`: read) |
 | `schedule:list` | `ignitify schedule:list` | read |
 | `schedule:cancel` | `ignitify schedule:cancel <sch-id> [--yes]` | ask |
-| `hook:list` | `ignitify hook:list <deployment-id> [--limit N] [--after-id <id>] [--after <iso>]` | read |
-| `hook:create` | `ignitify hook:create <deployment-id> --task-name <name>` | user (prints a secret once) |
+| `hook:list` | `ignitify hook:list <task> [--limit N] [--after-id <id>] [--after <iso>]` | read |
+| `hook:create` | `ignitify hook:create <task>` | user (prints a secret once) |
 | `hook:delete` | `ignitify hook:delete <hook-resource-id> [--yes]` | user |
 | `notify:set` | `ignitify notify:set <deployment-id> --url <https://…> --secret-stdin` or `ignitify notify:set <deployment-id> --clear` | user |
 | `user:create` | `ignitify user:create <name> [--json]` | owner |
@@ -97,5 +97,7 @@ Permissions (`ignitify permission:list`): `tasks.read`, `tasks.write`, `deployme
 `task:run --idempotency-key <key>`: 8 to 255 characters of `A-Z a-z 0-9 . _ : -`. A retry with the same key gets the first answer and starts no second run. See `ignitify-runs`.
 
 `task:validate --review-packages` sends the `build.system_packages` names and the runtime id to a platform-side AI review for advice. Nothing else leaves the machine, and the exit code does not change.
+
+`<task>` is the task slug or id. A webhook belongs to the task, not to one deployment: each run it starts uses the task's newest `READY` deployment, so a code update keeps the URL and the secret. `hook:list` also prints a line on stderr that names that deployment (or says none is `READY`). `deployment:get` and `deployment:list` show `admitted_at`, when the latest build of the deployment was requested.
 
 Full reference: https://ignitify.dev/docs/cli/all

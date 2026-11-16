@@ -11,10 +11,10 @@ Read `ignitify-getting-started` first. Every diagnostic command below is read-on
 ## The shape of an error
 
 - Every failure prints an `Error:` line on stderr and exits 1 (130 after Ctrl+C during a wait).
-- A failed request adds the HTTP status and a JSON body: `Error: API 429: {"error":"…","reason":"…","boundBy":"…"}`.
-- Read the `reason` and `boundBy` fields, not the words: the words can change.
+- A failed request prints the server's sentence and its stable code: `Error: secret not found [secret-not-found]`. Read the code in brackets, not the words: the words can change.
+- With `--json`, or from an older CLI, the raw body prints: `Error: API 429: {"error":"…","reason":"…","boundBy":"…"}`. Read `reason` and `boundBy` there.
 - The next line is `server trace id: <id>`. Keep it for support.
-- `boundBy: tier-entitlement` is a plan limit. `boundBy: host-capacity` is a short lack of room on the platform.
+- In the raw body, `boundBy: tier-entitlement` is a plan limit. `boundBy: host-capacity` is a short lack of room on the platform.
 
 The full catalogue, line by line: [errors.md](errors.md).
 
@@ -55,10 +55,10 @@ For a task that fails often, start with `ignitify run:failures --days 7` and `ig
 | Chunks never reach the caller | `interaction: boundary-only` | Set `interaction: continuous`. |
 | Run stays `PENDING`, timeline "Queued: waiting for capacity" | No room right now | Wait; or `--on-busy reject` to fail fast. |
 | Run in `RETRYING` | A short-lived platform failure | Wait. It counts against limits. Repeats → support. |
-| `Error: API 429 … concurrent-run-quota` | All run slots in use | `ignitify quota`; wait or cancel a run (with consent). |
-| `Error: API 429 … run-unit-quota` | Units full | A lighter preset, or wait. |
-| `Error: API 429 … run-rate-quota` | Too many runs in the window | Wait for the window. |
-| `Error: API 429: {"error":"API request rate limit exceeded"}` | A script sends too fast | Slow down. |
+| `Error: … [concurrent-run-quota]` | All run slots in use | `ignitify quota`; wait or cancel a run (with consent). |
+| `Error: … [run-unit-quota]` | Units full | A lighter preset, or wait. |
+| `Error: … [run-rate-quota]` | Too many runs in the window | Wait for the window. |
+| `Error: … [rate-limited]` | A script sends too fast | Slow down. |
 | `Run refused — a monthly limit is reached` | The monthly allowance is used | `ignitify quota` shows the reset time. |
 | `Error: API 403 … not included in your current tier` | The plan lacks a capability | `ignitify whoami`, the `may_…` lines. |
 | `Error: API 401` | The key is wrong, revoked or expired (90 days without use) | The user runs `ignitify login`. |
@@ -70,7 +70,7 @@ For a task that fails often, start with `ignitify run:failures --days 7` and `ig
 | `unknown flag --x for <command>` | Typo or wrong command | `ignitify help <command>`. |
 | `Refusing to proceed: not a TTY` | A delete in a script | The user runs it in a terminal. Do not add `--yes`. |
 | A webhook answers 401 | The signature is over other bytes, or the content type is not JSON | Sign the exact body; send `content-type: application/json`. |
-| A webhook answers 404 | The hook was deleted or belongs to an old deployment | `ignitify hook:list <deployment-id>`. |
+| A webhook answers 404 | The hook was deleted | `ignitify hook:list <task>` (the hook belongs to the task, not to a deployment). |
 | Timeline "Callback blocked" | The `notify:set` URL is not allowed | Use a public HTTPS address the platform can resolve. |
 | The CLI warns the client is older than the API supports | An old CLI | The user upgrades: `npm install --global ignitify@latest`. |
 
