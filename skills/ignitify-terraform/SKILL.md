@@ -34,11 +34,11 @@ The key comes from `IGNITIFY_API_KEY` (the argument `api_key` also exists; never
 | access | **owner key**, applied by the tenant owner by hand, rarely | `ignitify_user`, `ignitify_group`, `ignitify_api_key` |
 | app | **user key** of a group with the needed permissions, applied by CI | `ignitify_secret`, `ignitify_task`, `ignitify_deployment`, `ignitify_hook` |
 
-- Keep them in two folders with two states. A user key on an access resource fails with "owner key required".
+- Keep them in two folders with two states. A user key on an access resource fails with HTTP 403, reason `owner-required` ("only an owner key manages users, groups and keys").
 - The access module outputs the user's `raw_key` (sensitive). The owner puts it in the CI secret store; the app module reads it from `IGNITIFY_API_KEY`.
 - Check the key in the access module: `data "ignitify_whoami" "me" {}` and a `check` block that asserts `is_owner_key`.
 - A user key with `deployments.write` can read secret values through the code it deploys. Give it only to who may read them.
-- Permissions for the app key: `tasks.read`, `tasks.write`, `deployments.read`, `deployments.write`, `secrets.read`, `secrets.write`, `hooks.read`, `hooks.write` (and `runs.read` to look at runs).
+- Permissions for the app key: `tasks.read`, `tasks.write`, `deployments.read`, `deployments.write`, `secrets.read`, `secrets.write`, `hooks.read`, `hooks.write` (and `runs.read` to look at runs, `runs.write` to start them with `task:run`).
 - Examples: `examples/access` and `examples/app` in the provider repository.
 
 ## Resources
