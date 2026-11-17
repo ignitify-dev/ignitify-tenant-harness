@@ -10,7 +10,7 @@ Read `ignitify-getting-started` first. You write the configuration. The user run
 
 ## Status and requirements
 
-- The provider is `ignitify-dev/ignitify`. It is not in the public registries yet: the registry release is coming. Until then the user installs a local build (the provider's README, "Build and install locally"). Do not invent another source.
+- The provider is `ignitify-dev/ignitify` on the Terraform Registry (v0.3.2 or newer). It is not in the OpenTofu Registry: with OpenTofu, the `source` must be the full address `registry.terraform.io/ignitify-dev/ignitify`. Do not invent another source.
 - Terraform 1.11 or newer, or OpenTofu 1.11 or newer. Older versions have no write-only arguments, which `ignitify_secret` needs.
 - It manages an existing tenant. See "What Terraform does not do".
 
