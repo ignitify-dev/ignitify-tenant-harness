@@ -101,7 +101,7 @@ You declare what the task is. The platform derives how to run it. Every field is
 | `inbound_rps`, `inbound_burst` | bidirectional | You may only lower the plan ceilings. |
 | `inbound_max_concurrent` | bidirectional | In-flight request cap. A value above the preset ceiling is lowered to it. |
 
-A blocked outbound host shows in the task as a reset connection (`ECONNRESET`), not as a platform error. A bidirectional task runs one VM at a time. Inbound needs a plan that allows it (`ignitify whoami`).
+A blocked outbound host shows in the task as a reset connection (`ECONNRESET`), not as a platform error. A bidirectional task runs one VM at a time. Outbound (`egress`) needs a plan that allows outbound; inbound (`bidirectional`) needs a plan that allows both inbound and outbound (`ignitify whoami`). The Free plan allows neither.
 
 ### Refused combinations
 
