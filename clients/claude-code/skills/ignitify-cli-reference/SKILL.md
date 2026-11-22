@@ -6,7 +6,7 @@ license: Apache-2.0
 
 # CLI reference
 
-Checked against ignitify CLI 3.3.0; the harness needs 3.3.0 or newer. When the installed CLI differs, `ignitify help <command>` wins.
+Checked against ignitify CLI 3.4.0; the harness needs 3.4.0 or newer. When the installed CLI differs, `ignitify help <command>` wins.
 
 ## Rules for every command
 
@@ -98,7 +98,7 @@ Checked against ignitify CLI 3.3.0; the harness needs 3.3.0 or newer. When the i
 
 `<axis>` is one of `compute`, `network`, `network_in`, `disk`, `scratch`, `runs`, `pin`, `build`.
 
-Permissions (`ignitify permission:list`): `tasks.read`, `tasks.write`, `deployments.read`, `deployments.write`, `runs.read`, `runs.write`, `secrets.read`, `secrets.write`, `hooks.read`, `hooks.write`, `usage.read`. User and group names: 1 to 63 lower case letters, digits and `-`, starting with a letter or digit.
+Permissions (`ignitify permission:list`): `tasks.read`, `tasks.write`, `deployments.read`, `deployments.write`, `runs.read`, `runs.write`, `secrets.read`, `secrets.write`, `hooks.read`, `hooks.write`, `schedules.read`, `schedules.write`, `usage.read`. User and group names: 1 to 63 lower case letters, digits and `-`, starting with a letter or digit.
 
 `task:run --idempotency-key <key>`: 8 to 255 characters of `A-Z a-z 0-9 . _ : -`. A retry with the same key gets the first answer and starts no second run. See `ignitify-runs`.
 

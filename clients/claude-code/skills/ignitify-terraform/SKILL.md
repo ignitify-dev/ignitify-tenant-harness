@@ -38,7 +38,7 @@ The key comes from `IGNITIFY_API_KEY` (the argument `api_key` also exists; never
 - The access module outputs the user's `raw_key` (sensitive). The owner puts it in the CI secret store; the app module reads it from `IGNITIFY_API_KEY`.
 - Check the key in the access module: `data "ignitify_whoami" "me" {}` and a `check` block that asserts `is_owner_key`.
 - A user key with `deployments.write` can read secret values through the code it deploys. Give it only to who may read them.
-- Permissions for the app key: `tasks.read`, `tasks.write`, `deployments.read`, `deployments.write`, `secrets.read`, `secrets.write`, `hooks.read`, `hooks.write` (and `runs.read` to look at runs; `runs.read` and `runs.write` for `ignitify_schedule`; `runs.write` also lets the key start runs with `task:run`).
+- Permissions for the app key: `tasks.read`, `tasks.write`, `deployments.read`, `deployments.write`, `secrets.read`, `secrets.write`, `hooks.read`, `hooks.write` (and `runs.read` to look at runs; `schedules.read` and `schedules.write` for `ignitify_schedule`, which needs provider 0.5.0 or later; `schedules.write` lets a schedule start runs later; `task:run --at` also needs `runs.write`).
 - Examples: `examples/access` and `examples/app` in the provider repository.
 
 ## Resources
@@ -52,7 +52,7 @@ The key comes from `IGNITIFY_API_KEY` (the argument `api_key` also exists; never
 | `ignitify_task` | `tasks.read`, `tasks.write` | `slug` | the task slug |
 | `ignitify_deployment` | `tasks.read`, `deployments.*` | `task`, `source_dir`, `timeouts`; optional `notify_url`, `notify_secret_wo`, `notify_secret_wo_version` | the task slug, or `<task slug>/<deployment id>` |
 | `ignitify_hook` | `hooks.read`, `hooks.write`, a plan with webhooks | `task`; read-only `url`, `secret` | `<task slug>/<hook resource_id>` |
-| `ignitify_schedule` | `runs.read`, `runs.write` (`tasks.read` to import) | `task`, `cron`, `payload` (JSON, `jsonencode`); optional `timezone` (default `UTC`), `preset`, `timeout_sec`, `deadline_sec`, `execution` (JSON), `overlap` (`skip` or `allow`), `paused`; read-only `schedule_id`, `status`, `pause_reason`, `payload_sha256` | `<task slug>/<schedule_id>` |
+| `ignitify_schedule` | `schedules.read`, `schedules.write` (`tasks.read` to import; provider 0.5.0 or later) | `task`, `cron`, `payload` (JSON, `jsonencode`); optional `timezone` (default `UTC`), `preset`, `timeout_sec`, `deadline_sec`, `execution` (JSON), `overlap` (`skip` or `allow`), `paused`; read-only `schedule_id`, `status`, `pause_reason`, `payload_sha256` | `<task slug>/<schedule_id>` |
 
 Data source `ignitify_whoami` works with any key: tenant, tier, `is_owner_key`, permissions, limits.
 

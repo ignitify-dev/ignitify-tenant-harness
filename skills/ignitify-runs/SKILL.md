@@ -73,6 +73,7 @@ ignitify schedule:cancel <sch-id>
 
 - The time must be in the future (ISO 8601; `Z` means UTC). No run exists until it fires.
 - `--at` and `--wait` cannot go together.
+- A user key needs `schedules.write` for `--at` and for every schedule write (`schedules.read` to list or show), besides `runs.write` for `--at`; without it the command gets `permission denied`.
 - After it fires, the schedule leaves `schedule:list` and the run shows in `run:list`.
 - `schedule:cancel` asks first. Ask the user before you cancel.
 
