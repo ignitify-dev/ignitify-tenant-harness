@@ -97,6 +97,7 @@ sh scripts/check-commands.sh --refresh  # rewrite cli/commands.txt from the inst
 sh scripts/sync-clients.sh              # copy skills/ and prompts/ into the Claude Code plugin
 sh scripts/sync-clients.sh --check      # fail when the copies are stale
 sh scripts/release.sh v0.1.5            # build the release archive and checksum for a tag
+bash scripts/publish.sh v0.1.5 notes.md   # check, tag, build, create the GitHub release and check its checksum
 ```
 
 Edit `skills/` and `prompts/` only; the plugin folders are copies. Keep each fact in one skill and link to it from the others.
