@@ -1,4 +1,4 @@
-# cli 3.1.0
+# cli 3.2.0
 * --json --help --yes --version
 task:create --lang --local --no-init --no-scaffold --dir
 task:list --limit --after-id --after
@@ -12,7 +12,7 @@ deployment:list --limit --after-id --after
 deployment:get
 deployment:logs --raw
 deployment:delete
-run:list --status --deployment-id --task-name --preset --correlation-id --vm-id --limit --after-id --after
+run:list --status --deployment-id --task-name --preset --correlation-id --vm-id --schedule --limit --after-id --after
 run:get --full
 run:logs --raw --follow --tail
 run:timeline --follow
@@ -26,7 +26,12 @@ secret:set --stdin
 secret:list
 secret:delete
 integration:add --task --dry-run --dir
+schedule:create --cron --tz --payload --preset --timeout-sec --deadline-sec --overlap
 schedule:list
+schedule:show
+schedule:pause
+schedule:resume
+schedule:preview --tz
 schedule:cancel
 hook:create
 hook:list --limit --after-id --after

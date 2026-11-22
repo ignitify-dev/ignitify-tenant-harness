@@ -6,7 +6,7 @@ license: Apache-2.0
 
 # CLI reference
 
-Checked against ignitify CLI 3.1.0; the harness needs 3.1.0 or newer. When the installed CLI differs, `ignitify help <command>` wins.
+Checked against ignitify CLI 3.2.0; the harness needs 3.2.0 or newer. When the installed CLI differs, `ignitify help <command>` wins.
 
 ## Rules for every command
 
@@ -54,7 +54,7 @@ Checked against ignitify CLI 3.1.0; the harness needs 3.1.0 or newer. When the i
 | `deployment:get` | `ignitify deployment:get <deployment-id>` | read |
 | `deployment:logs` | `ignitify deployment:logs <deployment-id> [--raw]` | read |
 | `deployment:delete` | `ignitify deployment:delete <deployment-id> [--yes]` | user |
-| `run:list` | `ignitify run:list [--status S] [--deployment-id D] [--task-name N] [--preset P] [--correlation-id C] [--vm-id V] [--limit N] [--after-id <id>] [--after <iso>]` | read |
+| `run:list` | `ignitify run:list [--status S] [--deployment-id D] [--task-name N] [--preset P] [--schedule <sch-id>] [--correlation-id C] [--vm-id V] [--limit N] [--after-id <id>] [--after <iso>]` | read |
 | `run:get` | `ignitify run:get <run-id> [--full]` | read |
 | `run:logs` | `ignitify run:logs <run-id> [--follow] [--tail N] [--raw]` | read |
 | `run:timeline` | `ignitify run:timeline <run-id> [--follow]` | read |
@@ -69,6 +69,11 @@ Checked against ignitify CLI 3.1.0; the harness needs 3.1.0 or newer. When the i
 | `secret:delete` | `ignitify secret:delete <NAME> [--yes]` | user |
 | `integration:add` | `ignitify integration:add <name> --task <slug> [--yes \| --dry-run] [--dir <base-dir>]` | ask (with `--dry-run`: read) |
 | `schedule:list` | `ignitify schedule:list` | read |
+| `schedule:show` | `ignitify schedule:show <sch-id>` | read |
+| `schedule:preview` | `ignitify schedule:preview <cron> [--tz <zone>]` | read |
+| `schedule:create` | `ignitify schedule:create <task> --cron <expression> [--tz <zone>] [--payload <json>] [--preset <preset>] [--timeout-sec <n>] [--deadline-sec <n>] [--overlap skip\|allow]` | ask (starts a paid run at every slot) |
+| `schedule:pause` | `ignitify schedule:pause <sch-id>` | ask |
+| `schedule:resume` | `ignitify schedule:resume <sch-id>` | ask |
 | `schedule:cancel` | `ignitify schedule:cancel <sch-id> [--yes]` | ask |
 | `hook:list` | `ignitify hook:list <task> [--limit N] [--after-id <id>] [--after <iso>]` | read |
 | `hook:create` | `ignitify hook:create <task>` | user (prints a secret once) |
