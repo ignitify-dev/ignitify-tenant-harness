@@ -6,7 +6,7 @@ license: Apache-2.0
 
 # CLI reference
 
-Checked against ignitify CLI 3.2.0; the harness needs 3.2.0 or newer. When the installed CLI differs, `ignitify help <command>` wins.
+Checked against ignitify CLI 3.3.0; the harness needs 3.3.0 or newer. When the installed CLI differs, `ignitify help <command>` wins.
 
 ## Rules for every command
 
@@ -72,6 +72,7 @@ Checked against ignitify CLI 3.2.0; the harness needs 3.2.0 or newer. When the i
 | `schedule:show` | `ignitify schedule:show <sch-id>` | read |
 | `schedule:preview` | `ignitify schedule:preview <cron> [--tz <zone>]` | read |
 | `schedule:create` | `ignitify schedule:create <task> --cron <expression> [--tz <zone>] [--payload <json>] [--preset <preset>] [--timeout-sec <n>] [--deadline-sec <n>] [--overlap skip\|allow]` | ask (starts a paid run at every slot) |
+| `schedule:update` | `ignitify schedule:update <sch-id> [--cron <expression>] [--tz <zone>] [--payload <json>] [--preset <preset>] [--timeout-sec <n>] [--deadline-sec <n>] [--overlap skip\|allow]` | ask (changes when and how paid runs start) |
 | `schedule:pause` | `ignitify schedule:pause <sch-id>` | ask |
 | `schedule:resume` | `ignitify schedule:resume <sch-id>` | ask |
 | `schedule:cancel` | `ignitify schedule:cancel <sch-id> [--yes]` | ask |

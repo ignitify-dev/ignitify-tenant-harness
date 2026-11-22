@@ -1,6 +1,6 @@
 ---
 name: ignitify-runs
-description: Start and control Ignitify runs - task:run with --payload, --wait, --timeout-sec, --on-busy, --deployment, --at and --idempotency-key; run statuses; safe retries with no duplicate run; scheduled runs, one-time (--at) and recurring (schedule:create with a cron expression, schedule:show, schedule:pause, schedule:resume, schedule:list, schedule:cancel); webhooks that start runs (hook:create, signing); end-of-run callbacks (notify:set); and run:cancel. Use it when the user wants to run a task, pass input, run later, trigger from another system, or stop a run.
+description: Start and control Ignitify runs - task:run with --payload, --wait, --timeout-sec, --on-busy, --deployment, --at and --idempotency-key; run statuses; safe retries with no duplicate run; scheduled runs, one-time (--at) and recurring (schedule:create with a cron expression, schedule:update, schedule:show, schedule:pause, schedule:resume, schedule:list, schedule:cancel); webhooks that start runs (hook:create, signing); end-of-run callbacks (notify:set); and run:cancel. Use it when the user wants to run a task, pass input, run later, trigger from another system, or stop a run.
 license: Apache-2.0
 ---
 
@@ -82,16 +82,18 @@ ignitify schedule:cancel <sch-id>
 ignitify schedule:preview "0 3 * * *" --tz Europe/Berlin
 ignitify schedule:create <slug> --cron "0 3 * * *" --tz Europe/Berlin --payload '{"day":"yesterday"}'
 ignitify schedule:show <sch-id>
+ignitify schedule:update <sch-id> --cron "30 3 * * *"
 ignitify run:list --schedule <sch-id>
 ignitify schedule:pause <sch-id>
 ignitify schedule:resume <sch-id>
 ```
 
-- A recurring schedule starts a paid run at every slot, with no further human act. Ask the user before `schedule:create`, `schedule:pause` and `schedule:resume`, and show them the next fire times first (`schedule:preview`).
+- A recurring schedule starts a paid run at every slot, with no further human act. Ask the user before `schedule:create`, `schedule:update`, `schedule:pause` and `schedule:resume`, and show them the next fire times first (`schedule:preview`).
 - The expression has 5 fields (minute hour day-of-month month day-of-week), read in the IANA zone of `--tz` (default UTC). Each slot runs the task's newest READY deployment, so a code update needs no new schedule.
 - `--overlap skip` (the default) leaves a slot out while the schedule's last run is still active; `--overlap allow` starts it too.
+- `schedule:update` changes a schedule in place: only the flags you give change, and it keeps its id, its runs and its status (a paused schedule stays paused). A new `--cron` or `--tz` counts the next slot from now. `--payload` replaces the whole payload. Do not cancel and create a schedule to change it.
 - A resumed schedule fires from its next slot. It does not catch up the slots it missed.
-- The platform pauses a schedule after too many missed slots in a row, or when the plan no longer allows what it runs. `schedule:show` says why in plain words. Fix the cause, then ask the user before `schedule:resume`.
+- The platform pauses a schedule after too many missed slots in a row, or when the plan no longer allows what it runs. `schedule:show` says why in plain words. Fix the cause, then ask the user before `schedule:resume`. If the plan does not include recurring schedules, the resume is refused: the user changes plan first.
 - The plan limits how many recurring schedules a tenant holds (`whoami`, `max_schedules`). One more is refused with `schedule-quota`.
 - Never put a secret in a payload. The task reads secrets through `ctx.secrets`.
 
