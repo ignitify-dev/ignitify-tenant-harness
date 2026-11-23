@@ -1,6 +1,6 @@
 {
   "name": "ignitify",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Ignitify tenant harness: skills and commands that teach Claude Code the Ignitify platform, the ignitify CLI, and tenant-level troubleshooting.",
   "author": { "name": "Ignitify" },
   "homepage": "https://ignitify.dev/docs",

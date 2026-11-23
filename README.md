@@ -21,7 +21,7 @@ Skills, prompts, templates and examples that teach an AI client how to work with
 
 ## Install
 
-You need the Ignitify CLI 3.4.0 or newer first: `npm install --global ignitify` (Node 22.13 or newer), then `ignitify login`.
+You need the Ignitify CLI 3.5.0 or newer first: `npm install --global ignitify` (Node 22.13 or newer), then `ignitify login`.
 
 ### Claude Code, as a plugin
 
@@ -38,10 +38,10 @@ The script downloads one tagged release, checks its SHA-256, and copies files. I
 
 ```sh
 # Claude Code: skills and commands into ~/.claude (or ./.claude with --scope project)
-curl -fsSL https://raw.githubusercontent.com/ignitify-dev/ignitify-tenant-harness/v0.1.6/install.sh | sh -s -- --client claude-code
+curl -fsSL https://raw.githubusercontent.com/ignitify-dev/ignitify-tenant-harness/v0.1.7/install.sh | sh -s -- --client claude-code
 
 # Any other client: files into ./.ignitify-harness, then add the AGENTS.md block to your project
-curl -fsSL https://raw.githubusercontent.com/ignitify-dev/ignitify-tenant-harness/v0.1.6/install.sh | sh -s -- --client generic
+curl -fsSL https://raw.githubusercontent.com/ignitify-dev/ignitify-tenant-harness/v0.1.7/install.sh | sh -s -- --client generic
 ```
 
 Options: `--version <tag>`, `--sha256 <hex>` (the checksum from the release notes; stronger than the published `.sha256` file), `--from <checkout>` (no download), `--force`, `--uninstall`. Read the script before you run it.
@@ -87,7 +87,7 @@ One platform feature uses a model: `ignitify task:validate --review-packages` se
 
 ## Versions
 
-The harness has its own version (`v0.1.6`). It needs ignitify CLI 3.4.0 or newer. Each release is checked against one CLI version, named on the first line of `cli/commands.txt`. When your CLI is newer, `ignitify help <command>` is the authority; the skills say so.
+The harness has its own version (`v0.1.7`). It needs ignitify CLI 3.5.0 or newer. Each release is checked against one CLI version, named on the first line of `cli/commands.txt`. When your CLI is newer, `ignitify help <command>` is the authority; the skills say so.
 
 ## For maintainers
 
@@ -96,8 +96,8 @@ sh scripts/check-commands.sh            # every `ignitify <command> --flag` in t
 sh scripts/check-commands.sh --refresh  # rewrite cli/commands.txt from the installed CLI
 sh scripts/sync-clients.sh              # copy skills/ and prompts/ into the Claude Code plugin
 sh scripts/sync-clients.sh --check      # fail when the copies are stale
-sh scripts/release.sh v0.1.6            # build the release archive and checksum for a tag
-bash scripts/publish.sh v0.1.6 notes.md   # check, tag, build, create the GitHub release and check its checksum
+sh scripts/release.sh v0.1.7            # build the release archive and checksum for a tag
+bash scripts/publish.sh v0.1.7 notes.md   # check, tag, build, create the GitHub release and check its checksum
 ```
 
 Edit `skills/` and `prompts/` only; the plugin folders are copies. Keep each fact in one skill and link to it from the others.

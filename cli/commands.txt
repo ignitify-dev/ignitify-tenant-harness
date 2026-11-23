@@ -1,4 +1,4 @@
-# cli 3.4.0
+# cli 3.5.0
 * --json --help --yes --version
 task:create --lang --local --no-init --no-scaffold --dir
 task:list --limit --after-id --after
@@ -27,9 +27,9 @@ secret:list
 secret:delete
 integration:add --task --dry-run --dir
 schedule:create --cron --tz --payload --preset --timeout-sec --deadline-sec --overlap
-schedule:update --cron --tz --payload --preset --timeout-sec --deadline-sec --overlap
 schedule:list
 schedule:show
+schedule:update --cron --tz --overlap --payload --preset --timeout-sec --deadline-sec
 schedule:pause
 schedule:resume
 schedule:preview --tz
