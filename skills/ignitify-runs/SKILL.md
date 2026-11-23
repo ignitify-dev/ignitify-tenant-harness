@@ -76,6 +76,7 @@ ignitify schedule:cancel <sch-id>
 - A user key needs `schedules.write` for `--at` and for every schedule write (`schedules.read` to list or show), besides `runs.write` for `--at`; without it the command gets `permission denied`.
 - After it fires, the schedule leaves `schedule:list` and the run shows in `run:list`.
 - `schedule:cancel` asks first. Ask the user before you cancel.
+- In the task, a run started with `--at` has `ctx.run.schedule_id` and `ctx.run.scheduled_for` both empty, although `schedule:list` showed a `sch_…` id for it. Its key is `ctx.run.id`.
 
 ## Run on a repeating schedule
 
@@ -97,6 +98,7 @@ ignitify schedule:resume <sch-id>
 - The platform pauses a schedule after too many missed slots in a row, or when the plan no longer allows what it runs. `schedule:show` says why in plain words. Fix the cause, then ask the user before `schedule:resume`. If the plan does not include recurring schedules, the resume is refused: the user changes plan first.
 - The plan limits how many recurring schedules a tenant holds (`whoami`, `max_schedules`). One more is refused with `schedule-quota`.
 - Never put a secret in a payload. The task reads secrets through `ctx.secrets`.
+- The task reads its slot in `ctx.run`: `schedule_id` (the `sch_…` id) and `scheduled_for` (the slot time, UTC). When the task writes to another system, key the write on `(schedule_id, scheduled_for)` or on `ctx.run.id`, so one slot writes once (see `ignitify-task-authoring`, the `ctx` table).
 
 ## Start runs from another system (webhooks)
 

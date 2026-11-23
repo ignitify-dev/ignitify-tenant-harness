@@ -49,6 +49,7 @@ The `ctx` object:
 | `ctx.ready()` | Says "my inbound listener is up". Required for `network.type: bidirectional`. |
 | `ctx.metric(name, value, type, attrs)` | Records a task metric (`counter` by default). The platform keeps 100 per run. |
 | `ctx.callback` | This run's inbound callback (`url` and `verify(rawBody, signature)`), or none. `verify` returns a boolean. |
+| `ctx.run` | The run this call serves: `id` (the `run_…` id), `schedule_id` and `scheduled_for` (the slot, UTC ISO 8601). The two schedule fields are empty (null / `None` / `""`) when no recurring schedule started the run, also for `task:run --at`. Go: `ctx.Run.ID`, `.ScheduleID`, `.ScheduledFor`. Go and Rust need the `ignitify/` client from CLI 3.5.0 or later (re-scaffold or copy `ignitify/`). Use `id`, or the pair `schedule_id` + `scheduled_for`, as the idempotency key for writes to other systems. |
 
 Console output goes to `ignitify run:logs`. In Node, print objects with `JSON.stringify`, or they show as `[object Object]`.
 
