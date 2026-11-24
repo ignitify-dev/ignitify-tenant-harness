@@ -99,6 +99,27 @@ ignitify schedule:resume <sch-id>
 - The plan limits how many recurring schedules a tenant holds (`whoami`, `max_schedules`). One more is refused with `schedule-quota`.
 - Never put a secret in a payload. The task reads secrets through `ctx.secrets`.
 - The task reads its slot in `ctx.run`: `schedule_id` (the `sch_…` id) and `scheduled_for` (the slot time, UTC). When the task writes to another system, key the write on `(schedule_id, scheduled_for)` or on `ctx.run.id`, so one slot writes once (see `ignitify-task-authoring`, the `ctx` table).
+- A slot that only waited for a run seat the platform held (for example during a host outage) does not count toward the pause.
+- When the platform is late past a slot's start deadline, the slot is skipped: a `schedule.missed` notification with the reason `deadline-passed`. It does not run by itself.
+
+**Resume after a platform incident.** Resume only the schedules the incident paused. The user puts the start of the incident (UTC) in the filter, so a schedule paused before it for another cause stays paused. Ask the user first:
+
+```sh
+ignitify schedule:list --json | jq -r '.[]
+  | select(.kind=="cron" and .status=="auto_paused" and .pause_reason=="consecutive-misses"
+           and .updated_at >= "2027-01-15T01:00:00Z")
+  | .schedule_id' | xargs -n1 ignitify schedule:resume
+```
+
+**Run a past slot by hand** (to test a schedule, or to run a missed day again). The task reads the slot as `payload.slot ?? ctx.run.scheduled_for`, because a run you start has no schedule. Get the payload of an earlier run (`ignitify run:list --schedule <sch-id> --limit 1`, then `ignitify run:get <run-id> --full`). `ignitify hook:list <slug>` names the deployment the schedule runs. Then, from the task folder, with the user's consent:
+
+```sh
+ignitify task:run <slug> --deployment <deployment-id> \
+  --payload '{"slot":"2027-01-15T02:00:00.000Z"}' \
+  --idempotency-key <sch-id>-2027-01-15T02-00Z --wait
+```
+
+`task:run` takes the preset and the time limit from the local `task.yaml`, not from the schedule. Compare with `run_settings` in `ignitify schedule:show <sch-id> --json`, and pass `--timeout-sec` to match.
 
 ## Start runs from another system (webhooks)
 
@@ -133,6 +154,8 @@ ignitify notify:set <deployment-id> --clear
 ```
 
 The callback is a POST with the same `x-ignitify-signature` header. Its body is `{"run_id", "status", "deployment_id", "tenant_id"}`, with no result. The receiver reads the result with `ignitify run:get <run_id>`.
+
+- **A callback belongs to one deployment.** A `task:deploy` that makes a new deployment starts with no callback, for scheduled and webhook runs alike. The user runs `notify:set` on the new deployment again, with the same URL and secret. `task:deploy` warns on stderr when the deployment before had a callback. Check with `ignitify deployment:get <deployment-id> --json` (`notify_url`). Terraform sets it on each new deployment.
 
 ## Stop a run
 

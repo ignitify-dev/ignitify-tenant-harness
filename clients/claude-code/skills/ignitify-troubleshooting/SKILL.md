@@ -72,6 +72,8 @@ For a task that fails often, start with `ignitify run:failures --days 7` and `ig
 | A webhook answers 401 | The signature is over other bytes, or the content type is not JSON | Sign the exact body; send `content-type: application/json`. |
 | A webhook answers 404 | The hook was deleted | `ignitify hook:list <task>` (the hook belongs to the task, not to a deployment). |
 | Timeline "Callback blocked" | The `notify:set` URL is not allowed | Use a public HTTPS address the platform can resolve. |
+| Callbacks stopped after a deploy | A callback belongs to one deployment; the new one has none | The user sets it again on the new deployment (see `ignitify-runs`, notify). |
+| A `schedule.missed` notification with reason `deadline-passed` | The platform was late and skipped that slot | Not a task fault. If the slot matters, run it by hand (see `ignitify-runs`). |
 | The CLI warns the client is older than the API supports | An old CLI | The user upgrades: `npm install --global ignitify@latest`. |
 
 ## Before you contact support
