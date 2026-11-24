@@ -25,7 +25,7 @@ The **only** interface for you is the `ignitify` CLI. Do not call the HTTP API d
 
 1. Check that the CLI is installed: `ignitify --version`. The first line is the client version. The second line says if the CLI reached the platform.
 2. If it is missing, tell the user to install it (Node 22.13 or newer, macOS or Linux): `npm install --global ignitify`. Do not install it yourself without asking.
-3. This harness needs ignitify CLI 3.5.0 or newer, and was checked against ignitify CLI 3.5.0. If the first line of `ignitify --version` is older, ask the user to upgrade: `npm install --global ignitify@latest`. If the installed CLI is newer, trust `ignitify help <command>` over the text of these skills.
+3. This harness needs ignitify CLI 3.6.0 or newer, and was checked against ignitify CLI 3.6.0. If the first line of `ignitify --version` is older, ask the user to upgrade: `npm install --global ignitify@latest`. If the installed CLI is newer, trust `ignitify help <command>` over the text of these skills.
 4. Check the key: `ignitify whoami`. If it says "Not signed in", ask the user to sign in (see "Which key you use" below). Never run `ignitify login` or `ignitify logout` yourself.
 5. Read the "This Key" block of `whoami`: the key, its user (`owner`, or a user name), the user's groups and permissions. It tells you what you may do (below).
 
@@ -67,6 +67,7 @@ ignitify key:create --user ai-assistant --label laptop --out ~/ignitify-ai-assis
 - With this key the platform refuses every write with `permission denied`. To let the client deploy or run, the owner grants that permission (`ignitify group:grant readers runs.write`). `ignitify permission:list` names the risks: `tasks.write` can delete deployments and runs, `deployments.write` with `runs.write` can read secret values in practice, `hooks.write` can start runs, `schedules.write` can start runs later from a schedule that outlives the key.
 - The lock holds only while the owner key is out of reach. On a machine where the owner is signed in, a client that unsets `IGNITIFY_API_KEY` falls back to the owner's saved login. For a hard lock, run the client where no owner login is saved (another OS user, a container or a VM).
 - To end the client's access: `ignitify key:list --user ai-assistant`, then `ignitify key:revoke <key-id>` (owner).
+- A revoke stops only the key. The schedules, webhooks and callbacks it made stay live. After a leaked key, the owner also pauses the recurring schedules it made (`created_by` in `schedule:list --json`), cancels the one-time schedules made after the leak, deletes the hooks they did not make, and clears a `notify_url` they do not know. The docs guide "Access control", section "After a key leaks", gives the steps.
 
 **Otherwise: the owner's own key** (`ignitify login`). Treat it as full access.
 
