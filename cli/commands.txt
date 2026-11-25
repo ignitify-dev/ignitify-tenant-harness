@@ -1,4 +1,4 @@
-# cli 3.6.0
+# cli 3.7.0
 * --json --help --yes --version
 task:create --lang --local --no-init --no-scaffold --dir
 task:list --limit --after-id --after
