@@ -9,7 +9,7 @@ Start with skills/ignitify-getting-started/SKILL.md. The installed CLI is the au
 - [Getting started](skills/ignitify-getting-started/SKILL.md): what Ignitify is, install, sign in, a read-only key for the AI client, safety rules for AI clients
 - [Task authoring](skills/ignitify-task-authoring/SKILL.md): task.yaml, runtimes, ctx API, execution nature, network, system packages, upload rules
 - [Deploy](skills/ignitify-deploy/SKILL.md): validate, pack, deploy, deployment status, versions, build failures
-- [Runs](skills/ignitify-runs/SKILL.md): task:run flags, run status, safe retries with --idempotency-key, schedules, webhooks, notify, cancel
+- [Runs](skills/ignitify-runs/SKILL.md): task:run flags, run status, safe retries with --idempotency-key, schedules, webhooks, notify, cancel, flows built from runs
 - [Secrets](skills/ignitify-secrets/SKILL.md): declare names, the user sets values, ctx.secrets
 - [Terraform](skills/ignitify-terraform/SKILL.md): the Ignitify provider, owner key versus user key, resources, write-only secrets, import, CLI instead
 - [Integrations](skills/ignitify-integrations/SKILL.md): integration:add for Node tasks

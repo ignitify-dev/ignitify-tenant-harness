@@ -1,6 +1,6 @@
 ---
 name: ignitify-runs
-description: Start and control Ignitify runs - task:run with --payload, --wait, --timeout-sec, --on-busy, --deployment, --at and --idempotency-key; run statuses; safe retries with no duplicate run; scheduled runs, one-time (--at) and recurring (schedule:create with a cron expression, schedule:update, schedule:show, schedule:pause, schedule:resume, schedule:list, schedule:cancel); webhooks that start runs (hook:create, signing); end-of-run callbacks (notify:set); and run:cancel. Use it when the user wants to run a task, pass input, run later, trigger from another system, or stop a run.
+description: Start and control Ignitify runs - task:run with --payload, --wait, --timeout-sec, --on-busy, --deployment, --at and --idempotency-key; run statuses; safe retries with no duplicate run; scheduled runs, one-time (--at) and recurring (schedule:create with a cron expression, schedule:update, schedule:show, schedule:pause, schedule:resume, schedule:list, schedule:cancel); webhooks that start runs (hook:create, signing); end-of-run callbacks (notify:set); run:cancel; and flows built from runs (chain runs, fan-out, fan-in, branch, loop, one at a time). Use it when the user wants to run a task, pass input, run later, trigger from another system, chain steps into a flow, or stop a run.
 license: Apache-2.0
 ---
 
@@ -168,6 +168,31 @@ ignitify run:cancel <run-id> --force      # kill now; also needed for a run on a
 ```
 
 Ask the user first. `run:delete` deletes the record only and does not stop a live run.
+
+## Build flows (chain runs, flow shapes)
+
+A run does one step. Something outside the VM starts the next step. **Never write a task that starts runs, and never put an API key in a task**, also not to read another run.
+
+Chain runs (https://ignitify.dev/docs/flows/chain-runs):
+
+- **The next step in the result.** The task returns `next` (task and payload) or `done`; the caller reads the result and starts that step.
+- **Your own orchestrator.** The user's workflow tool, cron job or queue keeps the flow state, starts each step (`task:run`), waits (`--wait`, `run:get`, or a callback to its own receiver) and starts the next.
+- **Run B when A ends.** A's callback (`notify:set`) points at B's webhook URL, signed with B's webhook secret; the user sets both. B gets A's `run_id` and `status`, never A's result, on every final status: B stops unless `status` is `COMPLETED`. Set it again after each deploy of A. A dropped callback starts no B (`callback.failing`). No circles.
+
+Flow shapes (https://ignitify.dev/docs/flows/flow-shapes):
+
+- **Fan-out.** The orchestrator or a script starts one run per part, a key per part. Above the plan's run limit a start gets `API 429`: start a few at a time.
+- **Fan-in.** The orchestrator keeps the run ids, waits until each is final (`run:get`), then combines the results. Large parts go to the user's own database.
+- **Branch and loop.** The task returns the branch or "again"; the caller starts it, counts, and stops at a maximum.
+- **One at a time.** The orchestrator starts the next run after the last one ended; or a schedule with `--overlap skip`; or a bidirectional task with `on_busy: queue` (runs in turn on one VM and, with `state: across-runs`, share its memory; behind a busy pinned VM a run fails with `bidirectional-busy`).
+
+Practices for every flow:
+
+- A flow id in every payload and result. The platform has no flow view.
+- `--idempotency-key <flow-id>:<step>` on every start. A new try after a `FAILED` run is a new run with a new key.
+- The platform retries only its own failures: the orchestrator retries a failed step a few times, then stops the flow. Make each step safe to run twice.
+- `--deployment <id>` on every step keeps one code version for the whole flow.
+- On stop, `run:cancel` the runs the flow started.
 
 ## Common mistakes
 
