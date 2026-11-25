@@ -48,7 +48,8 @@ There is no version number. Each deployment is one version.
 - `ignitify deployment:list` lists deployments with their image size.
 - `ignitify task:get <slug>` shows the deploys and runs of one task. It reads the local task folder first, so run it where `--dir` (or `$IGNITIFY_TASKS_DIR`) finds the folder.
 - `ignitify task:run <slug>` runs the task's newest deploy request (by `admitted_at`; `deployment:get` shows it). If that build failed or still builds, the run is refused.
-- `ignitify task:run <slug> --deployment <id>` runs an older, `READY` deployment (a roll back for one run).
+- `ignitify task:run <slug> --deployment <id>` runs an older, `READY` deployment (a roll back for one run), with the preset, time limit and `execution` that deployment stored from its `task.yaml`, not the local ones.
+- A change to `run.preset`, `run.timeout_sec` or `execution` in `task.yaml` reaches runs only after `task:deploy`: every run (`task:run`, the API, a webhook, a schedule) uses the deployed values unless it names its own.
 - A script that deploys, then runs, and may retry: a repeat of `task:deploy` after a network error never builds twice (the dedup key), then run the deployment id it printed with `ignitify task:run <slug> --deployment <id> --idempotency-key <key>`. Never retry `task:run` without the key (see `ignitify-runs`).
 - A webhook belongs to the task and runs its newest `READY` deployment. A new deploy keeps the webhook URL and secret (see `ignitify-runs`).
 - The end-of-run callback does NOT carry over: it belongs to one deployment, and `task:deploy` warns on stderr when the deployment before had one. Tell the user to set it again (see `ignitify-runs`, notify).

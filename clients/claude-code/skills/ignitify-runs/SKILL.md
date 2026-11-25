@@ -18,9 +18,9 @@ ignitify task:run <slug> --payload '{"name":"Ada"}' --wait
 | Flag | Meaning |
 | :-- | :-- |
 | `--payload <json>` | Input for this run only. Must be valid JSON and fit the payload limit. Default: `run.payload` from `task.yaml`. |
-| `--timeout-sec <n>` | Time limit for this run only. Default: `run.timeout_sec`. |
+| `--timeout-sec <n>` | Time limit for this run only. Default: the deployment's `run.timeout_sec`. |
 | `--wait` | Follow the run to its end and print the result. Exit code 0 only when the run is `COMPLETED`. |
-| `--on-busy queue\|reject` | When the run cannot start at once: `queue` (default) waits for room for a limited time, `reject` fails at once. |
+| `--on-busy queue\|reject` | When the run cannot start at once: `queue` waits for room for a limited time, `reject` fails at once. Default: the deployed `execution.on_busy`, else `queue`. A bidirectional task runs one VM at a time: queued runs run in turn, but behind a busy pinned VM a run is accepted, then fails (`bidirectional-busy`), also with `queue`. The flag sends the `execution` of your local `task.yaml`, which replaces the deployed one for this run. |
 | `--deployment <id>` | Run this deployment, not the newest one. |
 | `--at <iso>` | Run later (below). |
 | `--idempotency-key <key>` | Start at most one run for this key. A retry with the same key gets the first answer (below). |
@@ -29,6 +29,8 @@ ignitify task:run <slug> --payload '{"name":"Ada"}' --wait
 Without `--deployment` and without local state, `task:run` runs the task's newest deploy request (by `admitted_at`). A redeploy of earlier code brings back its old deployment, and that deployment then counts as the newest.
 
 Without `--wait`, `task:run` returns at once with the run id and status `PENDING`. Follow it with `ignitify run:get <run-id>` or `ignitify run:timeline <run-id> --follow`. Ctrl+C stops the wait, not the run. `task.yaml` is never written by these flags.
+
+The run uses the preset, the time limit and `execution` that the deployment stored from its `task.yaml`. A local edit of `run.preset`, `run.timeout_sec` or `execution` takes effect only after `ignitify task:deploy`. `--deployment <id>` runs an older deployment with that deployment's settings. The local `run.payload` is still the default payload.
 
 The task must be deployed (`READY`). See `ignitify-deploy`.
 
@@ -119,7 +121,7 @@ ignitify task:run <slug> --deployment <deployment-id> \
   --idempotency-key <sch-id>-2027-01-15T02-00Z --wait
 ```
 
-`task:run` takes the preset and the time limit from the local `task.yaml`, not from the schedule. Compare with `run_settings` in `ignitify schedule:show <sch-id> --json`, and pass `--timeout-sec` to match.
+The run uses the preset, the time limit and `execution` that the deployment stored from its `task.yaml`, as a slot does. A slot also uses the run settings of the schedule (`run_settings` in `ignitify schedule:show <sch-id> --json`). If the schedule sets a time limit, pass the same `--timeout-sec`.
 
 ## Start runs from another system (webhooks)
 
@@ -142,7 +144,7 @@ The sender signs the exact body: `x-ignitify-signature: sha256=<hex HMAC-SHA256 
 
 - A webhook belongs to the task. Each run it starts uses the task's newest `READY` deployment, so a new deploy keeps the URL and the secret. With no `READY` deployment, a delivery is refused with 409.
 - Webhooks need a plan that allows them (`ignitify whoami`, the `may_…` lines). Otherwise `hook:create` gets `API 403`.
-- A webhook run always uses the preset's default disk.
+- A webhook run uses the preset, the time limit and `execution` (with `storage_mib`) that the deployment stored from its `task.yaml`. If a stored time limit or disk is now above the plan's limit, a delivery is refused with 409 `deployment-not-bootable`; a capability the plan no longer has gives 403. Fix `task.yaml` and deploy again.
 
 ## Get a call when a run ends (notify)
 

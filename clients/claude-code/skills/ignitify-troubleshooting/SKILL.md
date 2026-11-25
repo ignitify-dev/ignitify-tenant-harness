@@ -43,7 +43,7 @@ For a task that fails often, start with `ignitify run:failures --days 7` and `ig
 | Run `FAILED`, log ends in a stack trace | A bug in `run()` | Read the trace; fix the code. A thrown error is the run error. |
 | Run `FAILED` at once, init message | `init()` threw | The first run after a boot fails with the init error. Fix `init()`. |
 | Run `FAILED`, `result exceeds max size` | The result is over the result limit | Return less; write big data to your own storage and return a link. |
-| Run `FAILED` after about `timeout_sec` | No sign of life within `timeout_sec` | Raise `run.timeout_sec` (plan cap: `ignitify whoami`), or use `duration: long` for long work. |
+| Run `FAILED` after about `timeout_sec` | No sign of life within `timeout_sec` | Raise `run.timeout_sec` (plan cap: `ignitify whoami`) and deploy again, or pass `--timeout-sec` for one run, or use `duration: long` for long work. |
 | Task error `ECONNRESET` on one host | The host is not in `egress_allow` (a redirect to another host is also blocked) | Add the exact host; check `network.type` is not `none`. |
 | Every outbound call fails | `network.type: none` (the default) | Set `type: egress`. |
 | Node task error `fetch failed` and nothing more | Node's `fetch` puts the network reason in `err.cause` | Log or rethrow `err.cause.code`. `ECONNRESET`: host not in `egress_allow`. `EAI_AGAIN` or `ENOTFOUND`: the name did not resolve (a typo, or DNS trouble; if it repeats for a correct name, prepare a support report). |
@@ -51,7 +51,7 @@ For a task that fails often, start with `ignitify run:failures --days 7` and `ig
 | A secret reads as empty or missing in code | The name is not in `secrets:` in `task.yaml` | Declare it; only declared names reach `ctx.secrets`. |
 | Bidirectional run fails, no public URL | `ctx.ready()` never called, or the task listens on another port | Call `ctx.ready()` after listen; `inbound_port` must equal the port in code. |
 | Public URL answers 404 | The path is not in `inbound_routes` | Add a `prefix` or `path`. Prefixes are case-sensitive. |
-| Crash or kill with no error of yours | Possibly: memory too small for the work | Try a bigger `run.preset` your plan allows. |
+| Crash or kill with no error of yours | Possibly: memory too small for the work | Try a bigger `run.preset` your plan allows, then deploy again: a run uses the deployed preset. |
 | Chunks never reach the caller | `interaction: boundary-only` | Set `interaction: continuous`. |
 | Run stays `PENDING`, timeline "Queued: waiting for capacity" | No room right now | Wait; or `--on-busy reject` to fail fast. |
 | Run in `RETRYING` | A short-lived platform failure | Wait. It counts against limits. Repeats → support. |

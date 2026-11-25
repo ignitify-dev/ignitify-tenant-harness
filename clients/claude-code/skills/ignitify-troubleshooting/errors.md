@@ -32,7 +32,8 @@ A webhook gets the same 429 and starts no run. A scheduled run waits and tries a
 | `Error: task.yaml: unknown run.preset "…" (valid: …)` | Use a name from the list. |
 | A `task.yaml` line naming a field (`task:validate` or `task:deploy`) | A value the platform cannot honour. Fix the named field. Pins and inbound network need a plan that allows them. A value above the plan (`storage_mib`, and the ceilings the docs name) is refused, not lowered; `inbound_max_concurrent` above its ceiling is lowered. |
 | `Error: API 400: {"error":"execution.storage_mib=… exceeds the scratch limit (… MiB)"}` | Declare at most the plan's scratch limit (`ignitify whoami`). |
-| `✗ Run refused — this bidirectional deployment already has a live VM.` | A task with inbound traffic runs one VM at a time. `--on-busy queue` waits for it. |
+| `Error: … the run settings in task … deployed task.yaml are not allowed: … [deployment-not-bootable]` (409) | The deployment stored a `run.preset`, `run.timeout_sec` or `execution` value that the plan no longer allows (for example after a plan change). Fix `task.yaml` and deploy again. |
+| `✗ Run refused — this bidirectional deployment already has a live VM.` | A task with inbound traffic runs one VM at a time. `--on-busy queue` waits for it. Behind a busy pinned VM a run is accepted, then fails with `bidirectional-busy`, even with `queue`: run it again when the pinned VM is free. |
 
 ## Before the request is sent
 
@@ -96,7 +97,7 @@ A user key holds only the permissions of its user's groups. `ignitify whoami` sh
 | :-- | :-- |
 | `401 {"error":"invalid signature"}` | Sign the exact body bytes with HMAC-SHA256, hex, header `x-ignitify-signature: sha256=<hex>`, `content-type: application/json`. |
 | `404 {"error":"unknown hook"}` | The hook id is wrong or deleted. |
-| `409` on a hook call | The task has no `READY` deployment. Deploy it; the hook keeps its URL and secret. |
+| `409` on a hook call | The task has no `READY` deployment: deploy it; the hook keeps its URL and secret. Or (reason `deployment-not-bootable`) the deployment stored a run setting the plan no longer allows: fix `task.yaml` and deploy again. |
 | `413 {"error":"payload too large"}` | The body is over the payload limit; it is refused before the signature check. |
 | `429 {"error":"rate limited"}` | Too fast, or a plan run limit. No run started. |
 | `notify url rejected: no-resolution` | The platform cannot resolve the host of the `notify:set` URL. Use a public host name. |

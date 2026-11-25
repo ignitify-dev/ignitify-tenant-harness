@@ -66,8 +66,8 @@ secrets: [DB_PASSWORD]     # names only; values come from `ignitify secret:set`
 execution: { … }           # the task nature, below
 run:
   payload: {}              # default input for task:run
-  preset: std.micro        # VM size
-  timeout_sec: 120         # silence budget in seconds
+  preset: std.micro        # VM size; stored at deploy, used by every run that names none
+  timeout_sec: 120         # silence budget in seconds; stored at deploy, like preset
 build:
   allowed_hosts: [registry.example.com]  # extra hosts the BUILD may fetch from
   ship: [models/]                        # upload paths copied as they are into the image
@@ -82,11 +82,11 @@ You declare what the task is. The platform derives how to run it. Every field is
 | :-- | :-- | :-- |
 | `cardinality` | `one`, `many`, `continuous` | `one`: a new VM per run, torn down after. `many`: warm VM reused between runs. `continuous`: a resident VM. |
 | `duration` | `short`, `long` | `long` sends heartbeats so the run can live past `timeout_sec`, up to a platform cap. `unbounded` is refused today. |
-| `state` | `independent`, `across-runs` | `across-runs` keeps the process between runs (warning: no snapshot). Needs `many` or `continuous`. `across-crashes` is refused today. |
+| `state` | `independent`, `across-runs` | `independent`: each run gets a new task process and an empty scratch drive. `across-runs`: the next run of the same task on a warm VM can get the last run's process, its memory and its scratch files; best-effort, one run after another (warning: no snapshot). Needs `many` or `continuous`. `across-crashes` is refused today. |
 | `interaction` | `boundary-only`, `continuous` | `continuous` streams `ctx.chunk()` to the caller. |
-| `storage_mib` | the preset default | Scratch disk in MiB, wiped at teardown. Less than the default is raised (a note says so). More than the plan limit is refused. |
+| `storage_mib` | the preset default | Scratch disk in MiB (`HOME` and the work directory: the place to write files). Wiped at teardown, and emptied after each `independent` run. Less than the default is raised (a note says so). More than the plan limit is refused. |
 | `residency` | `auto`, `pinned` | `pinned` keeps the VM until `vm:delete --force` or a delete of its deployment. A host restart loses the pin; the next run pins again. Needs `many` or `continuous` and a plan that allows pins. |
-| `on_busy` | `queue`, `reject` | The default for `task:run --on-busy`: wait for room, or fail at once. Not part of the nature. |
+| `on_busy` | `queue`, `reject` | What a run of the deployment does when it cannot start at once: wait for room, or fail at once. `task:run --on-busy` overrides it for one run. Not part of the nature. |
 | `network` | object, below | |
 
 ### execution.network

@@ -33,7 +33,7 @@ Read `ignitify-getting-started` first. Every command here is read-only.
 | Runs per window | at each run | `API 429 run-rate-quota` |
 | API requests per second | each request | `API 429 API request rate limit exceeded` |
 | Monthly allowance (for example compute) | at each run | `Run refused — a monthly limit is reached` |
-| Presets, max `timeout_sec`, scratch (`storage_mib`) | at deploy and at run | refused, never lowered for you |
+| Presets, max `timeout_sec`, scratch (`storage_mib`) | at deploy and at run | refused, never lowered for you. A stored value the plan no longer allows (after a plan change): `409 deployment-not-bootable` at run; fix `task.yaml` and deploy again |
 | Capabilities: outbound network, secrets, `duration: long`, `cardinality: continuous`, `state: across-runs`, pins, inbound network, webhooks, retries | each can be off for a plan; see the `may_…` lines of `ignitify whoami` | `API 403` or a refusal at deploy |
 | Payload and result size (same on every plan) | per run | payload: refused before the run; result: the run fails |
 
@@ -43,7 +43,7 @@ Details of each refusal: the `ignitify-troubleshooting` skill.
 
 `run.preset` sets vCPU, memory and the default scratch disk. Names: `std.micro`, `std.small`, `std.medium`, `std.large`, `std.xlarge`, `mem.large`, `mem.xlarge`, `cpu.large`. The plan sells only some (`ignitify whoami`). On a plan with units, a bigger preset uses more units while it runs. The sizes are on https://ignitify.dev/docs/concepts/presets-and-limits.
 
-Choose the smallest preset that runs the work. If a run crashes with no error of its own, try the next size.
+Choose the smallest preset that runs the work. If a run crashes with no error of its own, try the next size. A run uses the preset of the deployed `task.yaml`, so deploy again after you change `run.preset`.
 
 ## Usage axes (`ignitify usage`)
 
