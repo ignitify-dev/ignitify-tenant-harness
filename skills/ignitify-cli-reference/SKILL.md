@@ -6,7 +6,7 @@ license: Apache-2.0
 
 # CLI reference
 
-Checked against ignitify CLI 3.7.0; the harness needs 3.7.0 or newer. When the installed CLI differs, `ignitify help <command>` wins.
+Checked against ignitify CLI 3.8.0; the harness needs 3.8.0 or newer. When the installed CLI differs, `ignitify help <command>` wins.
 
 ## Rules for every command
 

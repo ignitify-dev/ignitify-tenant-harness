@@ -20,7 +20,7 @@ ignitify task:run <slug> --payload '{"name":"Ada"}' --wait
 | `--payload <json>` | Input for this run only. Must be valid JSON and fit the payload limit. Default: `run.payload` from `task.yaml`. |
 | `--timeout-sec <n>` | Time limit for this run only. Default: the deployment's `run.timeout_sec`. |
 | `--wait` | Follow the run to its end and print the result. Exit code 0 only when the run is `COMPLETED`. |
-| `--on-busy queue\|reject` | When the run cannot start at once: `queue` waits for room for a limited time, `reject` fails at once. Default: the deployed `execution.on_busy`, else `queue`. A bidirectional task runs one VM at a time: queued runs run in turn, but behind a busy pinned VM a run is accepted, then fails (`bidirectional-busy`), also with `queue`. The flag sends the `execution` of your local `task.yaml`, which replaces the deployed one for this run. |
+| `--on-busy queue\|reject` | When the run cannot start at once: `queue` waits for room for a limited time, `reject` fails at once. Default: the deployed `execution.on_busy`, else `queue`. A bidirectional task runs one VM at a time: queued runs run in turn, but behind a busy pinned VM a run is accepted, then fails (`bidirectional-busy`), also with `queue`. The flag sets only `on_busy`; every other setting stays the deployed one (CLI 3.8.0 or later). |
 | `--deployment <id>` | Run this deployment, not the newest one. |
 | `--at <iso>` | Run later (below). |
 | `--idempotency-key <key>` | Start at most one run for this key. A retry with the same key gets the first answer (below). |

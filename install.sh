@@ -1,7 +1,7 @@
 #!/bin/sh
 # Install the Ignitify tenant harness for an AI client. No root, no npm.
 #
-#   curl -fsSL https://raw.githubusercontent.com/ignitify-dev/ignitify-tenant-harness/v0.1.10/install.sh | sh -s -- --client claude-code
+#   curl -fsSL https://raw.githubusercontent.com/ignitify-dev/ignitify-tenant-harness/v0.1.11/install.sh | sh -s -- --client claude-code
 #
 # Options:
 #   --client claude-code|generic   what to install (required)
@@ -33,7 +33,7 @@ Usage: install.sh --client claude-code|generic [--scope user|project] [--version
 USAGE
 }
 
-HARNESS_VERSION="v0.1.10"
+HARNESS_VERSION="v0.1.11"
 REPO="ignitify-dev/ignitify-tenant-harness"
 NAME="ignitify-tenant-harness"
 MANIFEST_NAME=".ignitify-harness.manifest"
@@ -191,7 +191,7 @@ Next steps:
   2. Optional, recommended: add the permission rules of clients/claude-code/settings.example.json
      (in the harness repository) to your .claude/settings.json. They allow read-only ignitify
      commands, ask before writes, and deny deletes, secrets, webhooks, access commands and sign-in.
-  3. Give Claude Code its own read-only key (needs ignitify CLI 3.7.0 or newer; you run these, not Claude):
+  3. Give Claude Code its own read-only key (needs ignitify CLI 3.8.0 or newer; you run these, not Claude):
        ignitify group:create readers --permissions tasks.read,deployments.read,runs.read,schedules.read,secrets.read,hooks.read,usage.read
        ignitify user:create ai-assistant
        ignitify group:add-user readers ai-assistant
@@ -207,7 +207,7 @@ else
 Next steps:
   1. Copy the block in $base/AGENTS.md into your project's AGENTS.md (or the instruction file of your AI client).
   2. Point your client at $base/skills/ (start with ignitify-getting-started/SKILL.md).
-  3. Give your AI client its own read-only key (needs ignitify CLI 3.7.0 or newer; you run these, not the client):
+  3. Give your AI client its own read-only key (needs ignitify CLI 3.8.0 or newer; you run these, not the client):
        ignitify group:create readers --permissions tasks.read,deployments.read,runs.read,schedules.read,secrets.read,hooks.read,usage.read
        ignitify user:create ai-assistant
        ignitify group:add-user readers ai-assistant
