@@ -1,7 +1,7 @@
 #!/bin/sh
 # Install the Ignitify tenant harness for an AI client. No root, no npm.
 #
-#   curl -fsSL https://raw.githubusercontent.com/ignitify-dev/ignitify-tenant-harness/v0.1.9/install.sh | sh -s -- --client claude-code
+#   curl -fsSL https://raw.githubusercontent.com/ignitify-dev/ignitify-tenant-harness/v0.1.10/install.sh | sh -s -- --client claude-code
 #
 # Options:
 #   --client claude-code|generic   what to install (required)
@@ -33,7 +33,7 @@ Usage: install.sh --client claude-code|generic [--scope user|project] [--version
 USAGE
 }
 
-HARNESS_VERSION="v0.1.9"
+HARNESS_VERSION="v0.1.10"
 REPO="ignitify-dev/ignitify-tenant-harness"
 NAME="ignitify-tenant-harness"
 MANIFEST_NAME=".ignitify-harness.manifest"
